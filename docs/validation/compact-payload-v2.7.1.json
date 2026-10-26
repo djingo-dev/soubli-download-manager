@@ -1,5 +1,5 @@
 {
-  "version": "2.7.1",
+  "version": "2.7.2",
   "passed": 10,
   "checks": [
     "every downloaded release payload file matches its manifest",

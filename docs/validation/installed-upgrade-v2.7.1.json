@@ -1,5 +1,5 @@
 {
-  "version": "2.7.1",
+  "version": "2.7.2",
   "realUserInstallation": true,
   "installedInSameLocation": true,
   "registeredInstallations": 1,
@@ -12,7 +12,7 @@
   "finalTrayResident": true,
   "startupEnabled": true,
   "existingBrowserConfigurationUpdatedTwice": true,
-  "companionVersion": "2.7.1",
+  "companionVersion": "2.7.2",
   "realNativeHandshake": true,
   "noAdditionalDownloadTasksCreated": true,
   "installerBytes": 148108960,

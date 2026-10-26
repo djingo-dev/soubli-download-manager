@@ -1,5 +1,5 @@
 {
-  "version": "2.7.1",
+  "version": "2.7.2",
   "reproducedBeforeFix": true,
   "realWindowsPowerShell": true,
   "isolatedUnicodeProfile": true,
@@ -14,5 +14,5 @@
     "passed": 250,
     "failed": 0
   },
-  "uiAndTransferCodeUnchangedFrom": "2.7.0"
+  "uiAndTransferCodeUnchangedFrom": "2.7.2"
 }
