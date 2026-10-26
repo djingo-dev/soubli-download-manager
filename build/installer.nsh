@@ -20,8 +20,8 @@
   Var soubliRepairRadio
   Var soubliReinstallRadio
   Var soubliUninstallRadio
-  !define MUI_WELCOMEPAGE_TITLE "Welcome to soubli ${VERSION}"
-  !define MUI_WELCOMEPAGE_TEXT "Soubli Download Manager$\r$\n$\r$\nCreated by Wajdii Afroo$\r$\nfacebook.com/mohamedabdelnaby190$\r$\n$\r$\nThis wizard will install soubli on your computer. Click Next to continue."
+  !define MUI_WELCOMEPAGE_TITLE "Welcome to Soubli ${VERSION}"
+  !define MUI_WELCOMEPAGE_TEXT "Soubli Download Manager$\r$\n$\r$\nCreated by Wajdii Afroo$\r$\nfacebook.com/wajdiiafroo0610$\r$\n$\r$\nThis wizard will install soubli on your computer. Click Next to continue."
   !insertmacro MUI_PAGE_WELCOME
   Page custom soubliMaintenancePage soubliMaintenanceLeave
 
@@ -39,25 +39,25 @@
     StrCpy $INSTDIR $soubliExistingPath
     ${VersionCompare} "$soubliExistingVersion" "${VERSION}" $0
     ${If} $0 == 1
-      MessageBox MB_ICONEXCLAMATION|MB_OK "soubli $soubliExistingVersion is already installed. This package is ${VERSION}. Use the same or a newer installer to maintain it."
+      MessageBox MB_ICONEXCLAMATION|MB_OK "Soubli $soubliExistingVersion is already installed. This package is ${VERSION}. Use the same or a newer installer to maintain it."
       Quit
     ${EndIf}
-    !insertmacro MUI_HEADER_TEXT "Maintain soubli" "Choose how to maintain the existing installation."
+    !insertmacro MUI_HEADER_TEXT "Maintain Soubli" "Choose how to maintain the existing installation."
     nsDialogs::Create 1018
     Pop $0
-    ${NSD_CreateLabel} 0 0 100% 14u "Installed: soubli $soubliExistingVersion — application location:"
+    ${NSD_CreateLabel} 0 0 100% 14u "Installed: Soubli $soubliExistingVersion — application location:"
     Pop $0
     ${NSD_CreateText} 0 17u 100% 14u "$soubliExistingPath"
     Pop $0
     ${NSD_AddStyle} $0 ${ES_READONLY}
     ${NSD_CreateRadioButton} 0 42u 100% 16u "Repair / update application files to ${VERSION}"
     Pop $soubliRepairRadio
-    ${NSD_CreateRadioButton} 0 65u 100% 16u "Reinstall soubli ${VERSION} in the existing location"
+    ${NSD_CreateRadioButton} 0 65u 100% 16u "Reinstall Soubli ${VERSION} in the existing location"
     Pop $soubliReinstallRadio
-    ${NSD_CreateRadioButton} 0 88u 100% 16u "Uninstall the existing soubli application"
+    ${NSD_CreateRadioButton} 0 88u 100% 16u "Uninstall the existing Soubli application"
     Pop $soubliUninstallRadio
     ${NSD_Check} $soubliRepairRadio
-    ${NSD_CreateLabel} 0 117u 100% 45u "Repair and reinstall replace application files. Your library, settings and downloaded files are kept. Exit soubli from its tray menu before continuing. No second installation will be created."
+    ${NSD_CreateLabel} 0 117u 100% 45u "Repair and reinstall replace application files. Your library, settings and downloaded files are kept. Exit Soubli from its tray menu before continuing. No second installation will be created."
     Pop $0
     nsDialogs::Show
     Return
@@ -69,7 +69,7 @@
   Function soubliMaintenanceLeave
     ${NSD_GetState} $soubliUninstallRadio $0
     ${If} $0 == ${BST_CHECKED}
-      MessageBox MB_OKCANCEL|MB_ICONQUESTION "Open the soubli uninstaller? Your downloaded files and library will be kept." IDCANCEL soubliStayMaintenance
+      MessageBox MB_OKCANCEL|MB_ICONQUESTION "Open the Soubli uninstaller? Your downloaded files and library will be kept." IDCANCEL soubliStayMaintenance
       ExecWait '"$soubliExistingPath\Uninstall soubli.exe"' $0
       ${If} $0 != 0
         MessageBox MB_ICONEXCLAMATION|MB_OK "Uninstall was cancelled or could not finish. Exit soubli and try again."
@@ -124,10 +124,10 @@
 !macroend
 
 !macro customHeader
-  BrandingText "soubli ${VERSION} | Wajdii Afroo"
+  BrandingText "Soubli ${VERSION} | Wajdii Afroo"
 !macroend
 
-!define MUI_FINISHPAGE_TEXT "soubli has been installed.$\r$\n$\r$\nCreated by Wajdii Afroo"
+!define MUI_FINISHPAGE_TEXT "Soubli has been installed.$\r$\n$\r$\nCreated by Wajdii Afroo"
 !define MUI_FINISHPAGE_LINK "Wajdii Afroo - Facebook"
 !define MUI_FINISHPAGE_LINK_LOCATION "https://www.facebook.com/wajdiiafroo0610"
 

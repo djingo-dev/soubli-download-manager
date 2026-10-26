@@ -73,7 +73,7 @@ async function createDrop() {
   drop.webContents.setWindowOpenHandler(() => ({ action: 'deny' })); drop.webContents.on('will-navigate', e => e.preventDefault()); await drop.loadURL(web.origin + '/drop.html');
 }
 if (!app.requestSingleInstanceLock({ version: app.getVersion() })) {
-  app.whenReady().then(async () => { let residentVersion; try { const response = await fetch('http://127.0.0.1:' + (Number(process.env.soubli_PORT) || 17881) + '/health', { signal: AbortSignal.timeout(2000) }); residentVersion = (await response.json()).version; } catch { } if (!process.argv.includes('--background') && residentVersion !== app.getVersion()) dialog.showMessageBoxSync({ type: 'info', title: 'soubli is already running', message: 'Another soubli instance is already running.', detail: 'Exit soubli using Tasks → Exit or the tray menu before opening this edition. An older running copy cannot apply a newer update. Your library is kept.', buttons: ['OK'] }); app.quit(); });
+  app.whenReady().then(async () => { let residentVersion; try { const response = await fetch('http://127.0.0.1:' + (Number(process.env.soubli_PORT) || 62100) + '/health', { signal: AbortSignal.timeout(2000) }); residentVersion = (await response.json()).version; } catch { } if (!process.argv.includes('--background') && residentVersion !== app.getVersion()) dialog.showMessageBoxSync({ type: 'info', title: 'soubli is already running', message: 'Another soubli instance is already running.', detail: 'Exit soubli using Tasks → Exit or the tray menu before opening this edition. An older running copy cannot apply a newer update. Your library is kept.', buttons: ['OK'] }); app.quit(); });
 } else {
   app.on('second-instance', (_event, args) => { if (!service || !toolsWindows) { pendingCLI.push(args); return; } cli(args).catch(writeLog); if (!args.includes('--background')) showMain().catch(writeLog); });
   app.whenReady().then(async () => {
@@ -105,7 +105,7 @@ if (!app.requestSingleInstanceLock({ version: app.getVersion() })) {
     service = new Service(path.join(app.getPath('userData'), 'soubliData'), { protection: protectedStorage, desktop });
     // Use the user's Downloads folder for the first desktop launch.
     if (!service.store.get('desktopInitialized')) { service.store.saveSettings({ downloadDir: path.join(app.getPath('downloads'), 'soubli') }); service.store.set('desktopInitialized', true); }
-    web = await createServer(service, Number(process.env.soubli_PORT) || 17881);
+    web = await createServer(service, Number(process.env.soubli_PORT) || 62100);
     if (service.store.settings.startAtLogin && !process.env.soubli_SMOKE_TEST && !process.env.soubli_QA_SCRIPT) try { startup.reconcile(); } catch (error) { writeLog(error); }
     runtimeEvent({ event: 'started', version: app.getVersion(), background: process.argv.includes('--background'), softwareRendering: !process.argv.includes('--soubli-hardware-acceleration') });
     service.browserBridge = new BrowserBridge(app, service, web.origin); try { await service.browserBridge.ensure(); } catch (error) { writeLog(error); service.store.log('browser', error.message); }

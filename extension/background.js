@@ -4,7 +4,7 @@ const localMessage = value => typeof soubliErrors !== 'undefined' ? (() => { con
 const HOST = 'local.soubli.companion', media = new Map(), requests = new Map(), inFlight = new Set(), pausedDiscovery = new Set();
 chrome.storage.session.get(null).then(cache => { for (const key of Object.keys(cache)) if (key.startsWith('mediaPaused:') && cache[key]) pausedDiscovery.add(Number(key.slice(12))); });
 chrome.storage.session.get(null).then(cache => { const keys = Object.keys(cache).filter(k => k.startsWith('request:')); for (const k of keys.slice(-150)) if (!requests.has(k.slice(8))) requests.set(k.slice(8), cache[k]); if (keys.length > 150) chrome.storage.session.remove(keys.slice(0, -150)).catch(() => { }); });
-const defaults = { address: 'http://127.0.0.1:17881', token: '', autoCapture: false, fileTypes: 'ZIP RAR 7Z PDF DOCX XLSX MP3 MP4 MKV EXE MSI ISO', excludedSites: '', videoPanel: true, panelMode: 'full', capturePausedUntil: 0, captureDisabledSites: [] };
+const defaults = { address: 'http://127.0.0.1:62100', token: '', autoCapture: false, fileTypes: 'ZIP RAR 7Z PDF DOCX XLSX MP3 MP4 MKV EXE MSI ISO', excludedSites: '', videoPanel: true, panelMode: 'full', capturePausedUntil: 0, captureDisabledSites: [] };
 const client = /Edg\//.test(navigator.userAgent) ? 'Edge' : /Chrome\//.test(navigator.userAgent) ? 'Chrome' : 'Chromium';
 async function config() { return chrome.storage.local.get(defaults); }
 function excluded(url, c) { const host = new URL(url).hostname.toLowerCase(); return c.excludedSites.toLowerCase().split(/[\s,;]+/).filter(Boolean).some(h => host === h.replace(/^\*\./, '') || h.startsWith('*.') && host.endsWith(h.slice(1))); }
@@ -49,13 +49,13 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   } catch (e) { await fail(e); if (tab?.id !== undefined) chrome.tabs.sendMessage(tab.id, { type: 'soubliError', message: e.message }).catch(() => { }); }
 });
 chrome.webRequest.onBeforeSendHeaders.addListener(details => {
-  if (details.url.startsWith('http://127.0.0.1:17881/')) return;
+  if (details.url.startsWith('http://127.0.0.1:62100/')) return;
   const headers = {}; for (const h of details.requestHeaders || []) if (['cookie', 'user-agent', 'referer', 'authorization', 'origin'].includes(h.name.toLowerCase())) headers[h.name.toLowerCase()] = h.value;
   const entry = { headers, method: details.method }; requests.set(details.url, entry); chrome.storage.session.set({ ['request:' + details.url]: entry }).catch(() => { });
   if (requests.size > 150) { const key = requests.keys().next().value; requests.delete(key); chrome.storage.session.remove('request:' + key).catch(() => { }); }
 }, { urls: ['http://*/*', 'https://*/*'] }, ['requestHeaders', 'extraHeaders']);
 chrome.webRequest.onHeadersReceived.addListener(details => {
-  if (details.tabId < 0 || pausedDiscovery.has(details.tabId) || details.url.startsWith('http://127.0.0.1:17881/')) return;
+  if (details.tabId < 0 || pausedDiscovery.has(details.tabId) || details.url.startsWith('http://127.0.0.1:62100/')) return;
   const type = details.responseHeaders?.find(h => h.name.toLowerCase() === 'content-type')?.value || '';
   if (!/video\/|audio\/|mpegurl|dash\+xml/i.test(type) && !/\.(mp4|mkv|webm|mp3|m3u8|mpd)(\?|$)/i.test(details.url)) return;
   const entry = soubliMediaModel.describe({ url: details.url, type, size: details.responseHeaders?.find(h => h.name.toLowerCase() === 'content-length')?.value || '', contentRange: details.responseHeaders?.find(h => h.name.toLowerCase() === 'content-range')?.value || '' });

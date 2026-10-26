@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { Service } = require('./service.cjs');
-async function createServer(service, port = 17881) {
+async function createServer(service, port = 62100) {
   const token = crypto.randomBytes(32).toString('hex'), ui = path.join(__dirname, '../ui');
   let origin;
   const same = (a, b) => typeof a === 'string' && Buffer.byteLength(a) === Buffer.byteLength(b) && crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
@@ -49,7 +49,7 @@ async function createServer(service, port = 17881) {
 }
 if (require.main === module) {
   const dir = process.env.soubli_DATA_DIR || path.join(__dirname, '../data'); const service = new Service(dir);
-  createServer(service, Number(process.env.soubli_PORT) || 17881).then(({ origin, close }) => {
+  createServer(service, Number(process.env.soubli_PORT) || 62100).then(({ origin, close }) => {
     console.log(`soubli is running at ${origin} — Realm: ${service.store.realm.path}`);
     const stop = async () => { await close(); await service.close(); process.exit(0); }; process.on('SIGINT', stop); process.on('SIGTERM', stop);
   }).catch(async e => { console.error(e.message); await service.close(); process.exit(1); });

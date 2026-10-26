@@ -11,7 +11,7 @@ npm test
 npm start
 ```
 
-`npm run web` starts the same Node/Realm service with a browser UI. It is not a standalone static website and lacks some desktop capabilities. The default address is `127.0.0.1:17881`; stop another soubli instance before using the same port.
+`npm run web` starts the same Node/Realm service with a browser UI. It is not a standalone static website and lacks some desktop capabilities. The default address is `127.0.0.1:62100`; stop another soubli instance before using the same port.
 
 ## Build
 

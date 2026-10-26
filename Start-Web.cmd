@@ -7,6 +7,6 @@ if not exist "node_modules\realm\package.json" (
     exit /b 1
   )
 )
-echo Open http://127.0.0.1:17881 in your browser.
+echo Open http://127.0.0.1:62100 in your browser.
 call npm.cmd run web
 pause
