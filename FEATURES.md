@@ -1,0 +1,73 @@
+# Feature guide
+
+## Workspace controls in 2.7
+
+- Pin and reorder up to eight tools on the main toolbar.
+- Set simultaneous files (1–16) and HTTP connections per file (1–32) with a simple two-field form. Extra tasks wait with resumable bytes retained; torrent peer settings remain separate.
+- Share admission limits across direct tasks, queues, torrents and mirrors.
+- Choose sage, blue, violet, rose, sand or teal accents; compact/comfortable/spacious density; soft/crisp corners; reduced/system motion; fonts, sidebar width, labels and columns.
+- Recover the torrent process after an unexpected exit using retained source and partial data; expose balanced/fast/quiet profiles and observed connection health.
+- Use the independent transfer service and reconnect the interface after a crash.
+- Keep the complete Windows edition, or choose an optional smaller Compact Preview with shared Microsoft prerequisites. [Edition details](docs/COMPACT-WINDOWS-PREVIEW.md).
+
+[Quick start and downloads](README.md#choose-your-soubli) · [Simple tools guide](docs/TOOLS.md) · [Current boundaries](docs/LIMITATIONS.md)
+
+## Download engine
+
+- HTTP/HTTPS range probing with GET fallback, redirects and HTTP/2.
+- Dynamic segments, persistent checkpoints, retries, pause and resume.
+- Content-Range, ETag, Last-Modified and received-length validation before combining remote data.
+- FTP passive transfers and resume at saved local byte offsets.
+- Per-file, aggregate and shared queue HTTP bandwidth limits; scheduling, priorities and rolling quotas.
+- External scanner using argument arrays rather than shell command interpolation.
+- Selective standard ZIP extraction through exact HTTP ranges, CRC checks and bounded file selections; no ZIP64, multipart or encrypted entries.
+
+## Browser integration
+
+Chromium Manifest V3 companion, Windows Native Messaging and authenticated loopback fallback. Context menus, selected links, page link picker, authorized cookie/referrer handoff and optional automatic capture. Snooze capture for 15 minutes or exclude a site. Chrome cancels only after desktop acknowledgement. POST, blob/data, incognito downloads and excluded types remain in the browser.
+
+The floating video panel supports pointer dragging, keyboard positioning, per-host persistence, minimize, close, reset and site hiding. Discovery filters byte-range fragments and signed duplicates. Separate video tracks may still need audio merging.
+
+## Video and media
+
+Bundled yt-dlp selects website formats and merges audio/video with FFmpeg. Public YouTube playlists can be inspected and imported up to 10,000 entries, with an explicit warning on truncation. All/individual selection, duplicate skipping, ordered filenames, playlist folders and queue start are supported. Best, audio-only and maximum 480p/720p/1080p options are available. Direct unencrypted HLS/DASH streams can be assembled. Protected media is rejected.
+
+The workshop converts completed local media to MP3, M4A, MP4 or WebM, trims time ranges and limits video height. It reports progress, supports cancellation and preserves originals. One job runs at a time.
+
+## Library and recovery
+
+- Up to 30 favorite folders and 20 recent destinations, plus actual disk capacity inspection.
+- Rename queued/paused tasks using `{name}`, `{n}`, `{host}`, `{ext}`, literal replacement and number padding. Preview, collision detection and guarded undo.
+- Up to 12 tags per task, at most 40 characters each.
+- Compound search: `host:`, `ext:`, `status:`, `tag:`, `min:`, `max:`, `queue:`, words and quoted phrases.
+- Up to 30 saved views in the sidebar.
+- Recovery bin bounded to 500 records, with no automatic purge. Restore retained tasks and partial bytes. Permanent bin removal preserves completed disk files.
+- Duplicate URL guard, file presence checks, stored-hash duplicate candidates and fresh SHA-256 verification.
+- URL rescue checks size, validators and samples from saved segments before replacing an incomplete HTTP task's URL.
+
+## Productivity and desktop
+
+Inspect up to 200 URLs with bounded concurrency, numeric expansion and deduplication. Ordered host/extension rules set folder, category, queue, priority, filename prefix and speed. Preview/import/export rules. Traffic profiles include normal, browsing, metered and custom, plus a weekly calendar and overnight periods.
+
+English default, Arabic RTL, System/Light/Dark, 80–150% scaling, separate native windows, minimize, tray, floating drop basket and integrated creator signature. Optional keep-awake runs only while downloads are active. Selective backups omit secrets and restore related groups in one Realm transaction; imported schedules remain disabled until manually enabled.
+
+See [limitations](docs/LIMITATIONS.md) and [validation](VALIDATION.md) for exact scope.
+
+## Release notifications
+
+GitHub Release checks after startup and every six hours while running, independent native update popup, version/notes, trusted release-page download button, manual Help check, 24-hour reminder, skip version and automatic-check preference. [Details](docs/UPDATES.md).
+
+## Calm interface and background operation (2.5.4)
+
+- Unified light/dark Material-inspired surfaces, muted category colors, slimmer progress tracks and contextual toolbar commands.
+- Compact transfer and completion windows; technical connections and paths expand on demand.
+- Close/minimize to the tray, quiet Windows startup, transfer sizes and speed in the tray tooltip.
+- Renderer recovery, hidden-window polling suspension and 200-row library pagination.
+- Transient HTTP reconnects, adaptive per-host concurrency and validated resume fallback.
+
+
+## Task-first tools in 2.6
+
+One Tools button and Ctrl+K find torrents/magnets, phone control over trusted local Wi-Fi, verified mirrors, selected ZIP files, completed-file move/rename, SHA-512, duplicate-task cleanup and personalization. See [the simple guide](docs/TOOLS.md). Technical controls stay collapsed; queue yielding and history cleanup are off by default. Queue shutdown includes a cancellable one-minute countdown and runs only after success with other work idle.
+
+Linux packaging is deferred; 2.6.0 ships Windows editions only. [Every reviewed FDM proposal](docs/FDM-FEATURE-AUDIT.md) has a status and a boundary.

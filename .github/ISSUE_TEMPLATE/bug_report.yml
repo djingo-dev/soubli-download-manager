@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a reproducible soubli problem
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: "Redact tokens, cookies, private URLs and personal paths."
+  - type: input
+    id: version
+    attributes:
+      label: soubli version and installer or portable edition
+    validations:
+      required: true
+  - type: dropdown
+    id: edition
+    attributes:
+      label: Edition
+      options:
+        - Complete setup
+        - Complete portable
+        - Compact Preview setup
+        - Compact Preview portable
+        - Running from source
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Windows and browser version
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps and expected versus actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Redacted screenshots or diagnostic report

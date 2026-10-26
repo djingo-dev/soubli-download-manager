@@ -1,0 +1,16 @@
+{
+  "version": "2.6.0",
+  "installerSha256": "f97d1a92374d54c4bf403ff9534db10c1a608f9fb1db903fa6af5be56237549e",
+  "date": "2026-10-24",
+  "installerExitCode": 0,
+  "healthy": true,
+  "downloadCountBefore": 1,
+  "downloadCountAfter": 1,
+  "downloadFieldsPreserved": true,
+  "preferencesPreserved": true,
+  "startupEnabled": true,
+  "startupStableLauncherAndQuietArguments": true,
+  "trayResident": true,
+  "privateBackupRetainedLocally": true,
+  "rebootPerformed": false
+}

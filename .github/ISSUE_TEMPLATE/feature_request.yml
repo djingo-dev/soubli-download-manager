@@ -1,0 +1,16 @@
+name: Feature request
+description: Describe a worksoubli soubli could improve
+title: "[Feature] "
+body:
+  - type: textarea
+    id: worksoubli
+    attributes:
+      label: Problem or worksoubli
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior and example
+    validations:
+      required: true

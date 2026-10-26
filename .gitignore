@@ -1,0 +1,16 @@
+node_modules/
+data/
+release/
+release-compact/
+/validation/
+*.log
+.env
+.env.*
+*.realm*
+realm-key.*
+host-config.json
+SOURCE-MANIFEST.json
+.DS_Store
+Thumbs.db
+
+/vendor/yt-dlp_linux

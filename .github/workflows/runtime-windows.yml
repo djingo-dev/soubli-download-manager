@@ -1,0 +1,34 @@
+name: Official full Windows runtime validation
+on:
+  worksoubli_dispatch:
+permissions:
+  contents: read
+jobs:
+  runtime:
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.14.0'
+          cache: npm
+      - run: npm ci
+      - name: Verify the unchanged official runtime and full locale support
+        shell: pwsh
+        run: |
+          $runtime=(Get-Command node).Source
+          if((Get-FileHash -LiteralPath $runtime -Algorithm SHA256).Hash.ToLowerInvariant() -ne '33b1bc1a8aca11fd5a4f2699e51019c63c0af30cf437701d07af69be7706771b'){throw 'Full upstream runtime fingerprint mismatch'}
+          & $runtime -e "const a=require('assert');a.equal(process.versions.node,'22.14.0');a.equal(Intl.DateTimeFormat.supportedLocalesOf(['ar','en','de','ja','fr']).length,5);require('realm').shutdown();console.log('Full locale and Realm compatibility passed')"
+          if($LASTEXITCODE -ne 0){throw 'Runtime compatibility failed'}
+          & $runtime --test --test-concurrency=1 test/*.test.cjs > runtime-tests.txt 2>&1
+          Get-Content runtime-tests.txt -Tail 12
+          if($LASTEXITCODE -ne 0){throw 'Service tests failed'}
+          @{version='22.14.0';sha256=(Get-FileHash $runtime -Algorithm SHA256).Hash.ToLowerInvariant();customBuild=$false;fullLocales=$true}|ConvertTo-Json|Set-Content Runtime-Provenance.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: full-runtime-verification
+          path: |
+            Runtime-Provenance.json
+            runtime-tests.txt
+          retention-days: 14
