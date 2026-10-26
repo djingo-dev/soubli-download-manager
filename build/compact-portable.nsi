@@ -6,7 +6,7 @@ Unicode true
 !include "${PROJECT_DIR}\build\compact-installer.nsh"
 Name "Soubli Download Manager"
 OutFile "${OUTPUT_FILE}"
-Icon "${PROJECT_DIR}\build\icon.ico"
+Icon "${PROJECT_DIR}\build\ico.ico"
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
 SetCompressorDictSize 64

@@ -75,7 +75,7 @@
         "nsis"
       ],
       "signExecutable": false,
-      "icon": "build/icon.ico"
+      "icon": "build/ico.ico"
     },
     "portable": {
       "artifactName": "soubli-${version}-Portable.${ext}"
