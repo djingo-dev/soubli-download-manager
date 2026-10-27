@@ -45,7 +45,7 @@ class soubliNativeHost {
   }
   static void Launch() {
     string executable = Value(config, "executable");
-    if (!File.Exists(executable)) throw new Exception("soubli executable was moved. Open soubli and set up browser integration again.");
+    if (!File.Exists(executable)) throw new Exception("Soubli executable was moved. Open Soubli and set up browser integration again.");
     // A background desktop must not inherit the browser's framed stdio pipes.
     var startup = new StartupInfo(); startup.cb = Marshal.SizeOf(startup); startup.flags = 1; startup.showWindow = 0;
     ProcessInfo info;
@@ -83,7 +83,7 @@ class soubliNativeHost {
               try { result = Request(type, message); break; }
               catch (WebException retry) { if (retry.Response != null) { using (var reader = new StreamReader(retry.Response.GetResponseStream())) throw new Exception(reader.ReadToEnd()); } }
             }
-            if (result == null) throw new Exception("soubli did not start. Open the app and test the connection again.");
+            if (result == null) throw new Exception("Soubli did not start. Open the app and test the connection again.");
           }
           Write(output, result);
         } catch (Exception ex) { Write(output, new { error = ex.Message }); }

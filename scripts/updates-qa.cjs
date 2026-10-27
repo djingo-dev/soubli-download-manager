@@ -38,7 +38,7 @@ module.exports = async ({ app, win, service, toolsWindows }) => {
         nativeTheme.themeSource = 'dark'; await wait(100); await js(popup, 'refresh()'); check('update window follows system dark appearance', await js(popup, 'document.body.classList.contains("dark")'));
         fs.writeFileSync(path.join(root, 'updates-ar-dark.png'), (await popup.webContents.capturePage()).toPNG());
         popup.setSize(520, 500); await service.action('settings', { textScale: 150 }); await js(popup, 'refresh()');
-        check('compact scaled update window has no horizontal document oversoubli', await js(popup, 'document.body.scrollWidth<=innerWidth+1'));
+        check('compact scaled update window has no horizontal document overflow', await js(popup, 'document.body.scrollWidth<=innerWidth+1'));
         await service.action('settings', { textScale: 100, language: 'en' }); popup.setSize(660, 620); await js(popup, 'refresh()');
         service.updates.fetch = async () => { throw Error('Offline fixture'); }; await service.updates.check({ manual: true }); await js(popup, 'refresh()');
         check('offline state offers retry without a download link', await js(popup, 'document.body.textContent.includes("Could not reach GitHub")&&!!document.querySelector("[data-action=updatesCheck]")&&!document.querySelector("[data-action=updatesOpen]")'));

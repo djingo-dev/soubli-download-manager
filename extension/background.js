@@ -15,9 +15,9 @@ async function transport(message) {
   let nativeError;
   try { const out = await chrome.runtime.sendNativeMessage(HOST, { ...message, client, extensionVersion: chrome.runtime.getManifest().version }); if (out?.error) throw Error(localMessage(out.error)); if (!out || message.type === 'ping' && out.app !== 'soubli') throw Error('Invalid native response'); await chrome.storage.session.set({ transport: 'Native Messaging', lastConnected: Date.now(), ...(message.type === 'download' ? { lastError: '' } : {}) }); return out; }
   catch (e) { nativeError = e; }
-  const c = await config(); if (!c.token) throw Error('Open soubli → Browser integration → Set up, then reload this extension. ' + nativeError.message);
-  const u = new URL(c.address); if (u.protocol !== 'http:' || !['127.0.0.1', 'localhost'].includes(u.hostname)) throw Error('Use a local soubli address.');
-  const r = await fetch(u.origin + (message.type === 'ping' ? '/extension/ping' : '/extension/add'), { method: 'POST', headers: { 'content-type': 'application/json', 'x-soubli-token': c.token }, body: JSON.stringify({ ...message, client, extensionVersion: chrome.runtime.getManifest().version }), signal: AbortSignal.timeout(8000) }); const out = await r.json(); if (!r.ok) throw Error(out.error || 'soubli connection failed'); await chrome.storage.session.set({ transport: 'Local HTTP', lastConnected: Date.now(), ...(message.type === 'download' ? { lastError: '' } : {}) }); return out;
+  const c = await config(); if (!c.token) throw Error('Open Soubli → Browser integration → Set up, then reload this extension. ' + nativeError.message);
+  const u = new URL(c.address); if (u.protocol !== 'http:' || !['127.0.0.1', 'localhost'].includes(u.hostname)) throw Error('Use a local Soubli address.');
+  const r = await fetch(u.origin + (message.type === 'ping' ? '/extension/ping' : '/extension/add'), { method: 'POST', headers: { 'content-type': 'application/json', 'x-soubli-token': c.token }, body: JSON.stringify({ ...message, client, extensionVersion: chrome.runtime.getManifest().version }), signal: AbortSignal.timeout(8000) }); const out = await r.json(); if (!r.ok) throw Error(out.error || 'Soubli connection failed'); await chrome.storage.session.set({ transport: 'Local HTTP', lastConnected: Date.now(), ...(message.type === 'download' ? { lastError: '' } : {}) }); return out;
 }
 async function requestInfo(url) { return requests.get(url) || (await chrome.storage.session.get('request:' + url))['request:' + url] || { method: 'GET', headers: {} }; }
 async function downloadHeaders(url, sourcePage) {
@@ -30,17 +30,17 @@ async function sendDownload(data) {
   const url = new URL(data.url); if (!['http:', 'https:'].includes(url.protocol)) throw Error('Only direct HTTP/HTTPS files can be transferred.');
   const { headers, method } = await downloadHeaders(url.href, data.sourcePage); if (method && method !== 'GET') throw Error('POST downloads must stay in the browser.');
   const out = await transport({ type: 'download', requestId: data.requestId || crypto.randomUUID(), ...data, headers, mode: data.mode || (/\.(m3u8|mpd)(\?|$)/i.test(url.href) ? 'media' : 'file') });
-  if (!out.result?.id) throw Error('soubli did not confirm this download.'); await chrome.action.setBadgeText({ text: '✓' }); await chrome.action.setBadgeBackgroundColor({ color: '#298b64' }); return out.result;
+  if (!out.result?.id) throw Error('Soubli did not confirm this download.'); await chrome.action.setBadgeText({ text: '✓' }); await chrome.action.setBadgeBackgroundColor({ color: '#298b64' }); return out.result;
 }
 async function refreshContentScripts() {
   const tabs = await chrome.tabs.query({});
   for (const tab of tabs) { if (!/^https?:/.test(tab.url || '')) continue; try { await chrome.scripting.executeScript({ target: { tabId: tab.id, allFrames: true }, files: ['panel-model.js', 'media-model.js', 'content.js'] }); } catch { } }
 }
 chrome.runtime.onInstalled.addListener(async () => {
-  await refreshContentScripts(); await chrome.contextMenus.removeAll(); chrome.contextMenus.create({ id: 'soubli-link', title: 'Download with soubli', contexts: ['link', 'video', 'audio'] }); chrome.contextMenus.create({ id: 'soubli-selection', title: 'Download selected links with soubli', contexts: ['selection'] }); chrome.contextMenus.create({ id: 'soubli-page', title: 'Download links on this page with soubli…', contexts: ['page'] }); await chrome.alarms.create('soubli-status', { periodInMinutes: 1 });
+  await refreshContentScripts(); await chrome.contextMenus.removeAll(); chrome.contextMenus.create({ id: 'soubli-link', title: 'Download with Soubli', contexts: ['link', 'video', 'audio'] }); chrome.contextMenus.create({ id: 'soubli-selection', title: 'Download selected links with Soubli', contexts: ['selection'] }); chrome.contextMenus.create({ id: 'soubli-page', title: 'Download links on this page with soubli…', contexts: ['page'] }); await chrome.alarms.create('soubli-status', { periodInMinutes: 1 });
 });
 chrome.alarms.onAlarm.addListener(async alarm => { if (alarm.name !== 'soubli-status') return; const s = await chrome.storage.session.get('lastConnected'); if (!s.lastConnected || Date.now() - s.lastConnected > 120000) return; try { await ping(); } catch { } });
-function requireCurrentDesktop(out) { const version = String(out.version || '0.0.0').split('.').map(Number); if (version[0] < 2 || version[0] === 2 && (version[1] < 5 || version[1] === 5 && version[2] < 2)) throw Error('soubli ' + (out.version || 'legacy') + ' is still running. Exit it from the tray menu, then open soubli 2.5.2 or newer. This download stays in Chrome.'); }
+function requireCurrentDesktop(out) { const version = String(out.version || '0.0.0').split('.').map(Number); if (version[0] < 2 || version[0] === 2 && (version[1] < 5 || version[1] === 5 && version[2] < 2)) throw Error('soubli ' + (out.version || 'legacy') + ' is still running. Exit it from the tray menu, then open Soubli 2.7.4 or newer. This download stays in Chrome.'); }
 async function ping() { const out = await transport({ type: 'ping' }); requireCurrentDesktop(out); if (out.settings) { const { preferenceOverrides = {} } = await chrome.storage.local.get({ preferenceOverrides: {} }), patch = { ...out.settings }; for (const key of Object.keys(preferenceOverrides)) if (['videoPanel', 'fileTypes', 'excludedSites', 'panelMode'].includes(key)) patch[key] = preferenceOverrides[key]; await chrome.storage.local.set(patch); } return out; }
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   try {

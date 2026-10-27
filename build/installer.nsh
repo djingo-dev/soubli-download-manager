@@ -72,7 +72,7 @@
       MessageBox MB_OKCANCEL|MB_ICONQUESTION "Open the Soubli uninstaller? Your downloaded files and library will be kept." IDCANCEL soubliStayMaintenance
       ExecWait '"$soubliExistingPath\Uninstall soubli.exe"' $0
       ${If} $0 != 0
-        MessageBox MB_ICONEXCLAMATION|MB_OK "Uninstall was cancelled or could not finish. Exit soubli and try again."
+        MessageBox MB_ICONEXCLAMATION|MB_OK "Uninstall was cancelled or could not finish. Exit Soubli and try again."
         Abort
       ${EndIf}
       Quit

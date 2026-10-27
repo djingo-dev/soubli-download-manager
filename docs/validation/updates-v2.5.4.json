@@ -19,7 +19,7 @@
     "a subsequent release can notify after an earlier version was skipped",
     "update interface switches to Arabic RTL",
     "update window follows system dark appearance",
-    "compact scaled update window has no horizontal document oversoubli",
+    "compact scaled update window has no horizontal document overflow",
     "offline state offers retry without a download link",
     "same version is shown as up to date",
     "update checks do not create or modify download tasks"

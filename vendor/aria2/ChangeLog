@@ -248,9 +248,9 @@ AuthorDate: 2023-10-09
 Commit:     GitHub <noreply@github.com>
 CommitDate: 2023-10-09
 
-    Merge pull request #2117 from egorenar/fix-formatr-string-oversoubli-in-logger-writeheader
+    Merge pull request #2117 from egorenar/fix-formatr-string-overflow-in-logger-writeheader
     
-    Logger: Fix format string oversoubli in writeHeader()
+    Logger: Fix format string overflow in writeHeader()
 
 commit 8718757e6c62aeffd81a2ed9fa88e0c05b6412cf
 Author:     Alexander Egorenkov <egorenar-dev@posteo.net>
@@ -258,7 +258,7 @@ AuthorDate: 2023-10-07
 Commit:     Alexander Egorenkov <egorenar-dev@posteo.net>
 CommitDate: 2023-10-07
 
-    Logger: Fix format string oversoubli in writeHeader()
+    Logger: Fix format string overflow in writeHeader()
     
     This problem occurred on a 32-bit ARM OpenWRT router running Linux 6.1.
     The method writeHeader() assumes that the size of struct timeval is 8 bytes
@@ -529,9 +529,9 @@ AuthorDate: 2023-09-16
 Commit:     GitHub <noreply@github.com>
 CommitDate: 2023-09-16
 
-    Merge pull request #2099 from aria2/fix-oversoubli
+    Merge pull request #2099 from aria2/fix-overflow
     
-    Fix oversoubli
+    Fix overflow
 
 commit 52469aba85173fab77d0e7a992491f60c8ca703a
 Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
@@ -539,7 +539,7 @@ AuthorDate: 2023-09-16
 Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
 CommitDate: 2023-09-16
 
-    Fix oversoubli
+    Fix overflow
 
 commit 2a809a99cd5d9cbd47e43b764a637f5a6d228f2a
 Merge: 3a005725 997efc88
