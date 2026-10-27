@@ -20,7 +20,7 @@ Browser capture, playlists, torrents, queues and useful file tools — in one cu
 
 | Edition | Install | Run without installing | Download size |
 | :--- | :--- | :--- | :--- |
-| **Complete** · retained compatibility choice | [Windows setup](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-2.7.1-Setup.exe) | [Portable](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-2.7.1-Portable.exe) | 148.1 / 147.9 MB |
+| **Complete** · retained compatibility choice | [Windows setup](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-2.7.1-Setup.exe) | [Portable](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-2.7.1-Portable.exe) | 140.37 / 140.17 MB |
 
 [All release files](https://github.com/djingo-dev/soubli-download-manager/releases/tag/v2.7.1)
 
