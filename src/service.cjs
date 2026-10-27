@@ -182,7 +182,7 @@ class Service {
       case 'extensionRotate': this.extensionToken = crypto.randomBytes(32).toString('hex'); s.set('extensionToken', this.extensionToken); await this.browserBridge?.configure(); return this.extensionToken;
       case 'browserInstall': if (!this.browserBridge) throw Error('افتح نسخة سطح المكتب لإعداد الربط'); return this.browserBridge.install();
       case 'browserFolder': if (!this.browserBridge) throw Error('افتح نسخة سطح المكتب'); if (!require('node:fs').existsSync(this.browserBridge.extensionPath)) throw Error('جهّز ربط المتصفح أولاً'); return this.desktop.open(this.browserBridge.extensionPath);
-      case 'browserExtensions': if (!this.desktop) throw Error('افتح chrome://extensions يدويًا'); return this.desktop.browserExtensions();
+      case 'browserExtensions': if (!this.desktop) throw Error('افتح chrome://extensions يدويًا'); return this.desktop.browserExtensions(data);
       case 'quit': if (!this.desktop) throw Error('هذه الوظيفة لسطح المكتب'); return this.desktop.quit();
       case 'open': case 'folder': {
         const d = s.find(data.id), file = d && JSON.parse(d.meta).filePath; if (!file || d.status !== 'complete') throw Error('الملف لم يكتمل بعد'); if (!this.desktop) throw Error('فتح الملفات متاح داخل تطبيق Electron'); return this.desktop[type](file);

@@ -91,7 +91,53 @@ if (!app.requestSingleInstanceLock({ version: app.getVersion() })) {
       openUpdateRelease: async url => { await shell.openExternal(url); return true; },
       authorProfile: async () => { await shell.openExternal('https://www.facebook.com/wajdiiafroo0610'); return true; },
       quit: () => { app.quit(); return true; },
-      browserExtensions: async () => { if (process.platform === 'linux') { for (const name of ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser', 'brave-browser', 'microsoft-edge']) { const exe = (process.env.PATH || '').split(path.delimiter).map(dir => path.join(dir, name)).find(file => fs.existsSync(file)); if (exe) { const child = require('node:child_process').spawn(exe, ['chrome://extensions'], { detached: true, stdio: 'ignore' }); child.on('error', writeLog); child.unref(); return true; } } throw Error('Open your browser extensions page and load the soubli Companion folder.'); } let chrome; for (const base of [process.env.PROGRAMFILES, process.env['PROGRAMFILES(X86)'], process.env.LOCALAPPDATA].filter(Boolean)) { const file = path.join(base, 'Google/Chrome/Application/chrome.exe'); if (fs.existsSync(file)) { chrome = file; break; } } if (!chrome) throw Error('افتح chrome://extensions في كروم'); const { spawn } = require('node:child_process'); const child = spawn(chrome, ['chrome://extensions'], { detached: true, stdio: 'ignore', windowsHide: true }); await new Promise((resolve, reject) => { child.once('spawn', resolve); child.once('error', reject); }); child.unref(); return true; },
+      browserExtensions: async (data = {}) => {
+        const preferred = typeof data === 'string' ? data : data?.browser;
+        if (process.platform === 'linux') {
+          const names = preferred
+            ? (preferred === 'brave' ? ['brave-browser'] : (preferred === 'edge' ? ['microsoft-edge'] : ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser']))
+            : ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser', 'brave-browser', 'microsoft-edge'];
+          for (const name of names) {
+            const exe = (process.env.PATH || '').split(path.delimiter).map(dir => path.join(dir, name)).find(file => fs.existsSync(file));
+            if (exe) {
+              const url = exe.includes('edge') ? 'edge://extensions' : (exe.includes('brave') ? 'brave://extensions' : 'chrome://extensions');
+              const child = require('node:child_process').spawn(exe, [url], { detached: true, stdio: 'ignore' });
+              child.on('error', writeLog);
+              child.unref();
+              return true;
+            }
+          }
+          throw Error('افتح صفحة الإضافات في المتصفح يدويًا');
+        }
+        let candidates = [
+          { name: 'chrome', url: 'chrome://extensions', rel: 'Google/Chrome/Application/chrome.exe' },
+          { name: 'brave', url: 'brave://extensions', rel: 'BraveSoftware/Brave-Browser/Application/brave.exe' },
+          { name: 'edge', url: 'edge://extensions', rel: 'Microsoft/Edge/Application/msedge.exe' },
+          { name: 'chromium', url: 'chrome://extensions', rel: 'Chromium/Application/chrome.exe' }
+        ];
+        if (preferred) {
+          candidates = candidates.filter(c => c.name === preferred).concat(candidates.filter(c => c.name !== preferred));
+        }
+        const bases = [process.env.LOCALAPPDATA, process.env.PROGRAMFILES, process.env['PROGRAMFILES(X86)'], process.env.PROGRAMW6432].filter(Boolean);
+        let targetExe, targetUrl = 'chrome://extensions';
+        for (const item of candidates) {
+          for (const base of bases) {
+            const file = path.join(base, item.rel);
+            if (fs.existsSync(file)) {
+              targetExe = file;
+              targetUrl = item.url;
+              break;
+            }
+          }
+          if (targetExe) break;
+        }
+        if (!targetExe) throw Error('افتح صفحة الإضافات في المتصفح يدويًا');
+        const { spawn } = require('node:child_process');
+        const child = spawn(targetExe, [targetUrl], { detached: true, stdio: 'ignore', windowsHide: true });
+        await new Promise((resolve, reject) => { child.once('spawn', resolve); child.once('error', reject); });
+        child.unref();
+        return true;
+      },
       open: async file => { const result = await shell.openPath(file); if (result) throw Error(result); return true; },
       folder: file => { shell.showItemInFolder(file); return true; },
       chooseDirectory: async () => { const r = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow() || win, { properties: ['openDirectory', 'createDirectory'] }); return r.canceled ? null : r.filePaths[0]; },

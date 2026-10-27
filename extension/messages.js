@@ -30,6 +30,7 @@
     "اسم النطاق غير صالح": "Invalid host name",
     "افتح chrome://extensions في كروم": "Open chrome://extensions in Chrome",
     "افتح chrome://extensions يدويًا": "Open chrome://extensions manually",
+    "افتح صفحة الإضافات في المتصفح يدويًا": "Open extensions page in your browser manually",
     "افتح الرابط من نسخة سطح المكتب": "Open this link from the desktop app",
     "افتح رابط المصدر في المتصفح": "Open the source page in your browser",
     "افتح صفحة الفيديو وتحقق من إتاحته وجلسة الحساب، ثم أعد فحص الجودات. قد تتغير متطلبات الموقع.": "Open the video page, check availability and your account session, then inspect quality again. Site requirements can change.",
