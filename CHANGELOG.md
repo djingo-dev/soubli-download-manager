@@ -47,7 +47,7 @@ The in-app updater still announces releases and opens the official download page
 - Optional slow-download queue yielding, independent of window focus.
 - Successful queue completion can request computer shutdown after a cancellable countdown; soubli product branding replaces the Electron label.
 - Compact draggable browser button, visible-player gating, child-frame sources and open shadow-root discovery.
-- Preparatory Linux build worksoubli, XDG autostart and native bridge retained for future work. Linux packages are deferred and are not part of this release.
+- Preparatory Linux build workflow, XDG autostart and native bridge retained for future work. Linux packages are deferred and are not part of this release.
 - See docs/FDM-FEATURE-AUDIT.md for every reviewed FDM voting item and explicit platform boundaries.
 
 

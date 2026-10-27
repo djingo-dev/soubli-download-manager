@@ -1,6 +1,6 @@
 name: Linux packages and integration checks
 on:
-  worksoubli_dispatch:
+  workflow_dispatch:
     inputs:
       releaseTag:
         description: 'Optional existing draft release tag for uploading verified Linux packages'
@@ -44,7 +44,7 @@ jobs:
           if-no-files-found: error
           retention-days: 14
       - name: Upload verified Linux packages to the requested draft release
-        if: github.event_name == 'worksoubli_dispatch' && inputs.releaseTag != ''
+        if: github.event_name == 'workflow_dispatch' && inputs.releaseTag != ''
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.releaseTag }}

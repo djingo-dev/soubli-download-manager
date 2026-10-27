@@ -1,11 +1,11 @@
 name: Feature request
-description: Describe a worksoubli soubli could improve
+description: Describe a workflow soubli could improve
 title: "[Feature] "
 body:
   - type: textarea
-    id: worksoubli
+    id: workflow
     attributes:
-      label: Problem or worksoubli
+      label: Problem or workflow
     validations:
       required: true
   - type: textarea

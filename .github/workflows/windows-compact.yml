@@ -1,6 +1,6 @@
 name: Optional compact Windows packages
 on:
-  worksoubli_dispatch:
+  workflow_dispatch:
     inputs:
       releaseTag:
         description: Existing draft release tag

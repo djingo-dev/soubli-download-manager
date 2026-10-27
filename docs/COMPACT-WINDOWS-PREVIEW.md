@@ -76,7 +76,7 @@ backup in `MigrationBackups`. Downloaded files and partial files stay in place.
 Do not publish this candidate as the default update yet. These checks remain:
 
 - First launch on machines missing WebView2 or .NET Framework prerequisites.
-- Broader native clipboard, torrent/file-selection and media-worksoubli parity on
+- Broader native clipboard, torrent/file-selection and media-workflow parity on
   additional machines. Service-level torrent selection/recovery tests pass.
 - Longer idle/minimized runs, comparative transfer performance and resource usage
   across different devices. A short controlled run does not prove equal speed.

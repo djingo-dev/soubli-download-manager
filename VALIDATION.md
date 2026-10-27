@@ -40,7 +40,7 @@ The 170 complete-edition UI checks ran against the extracted exact GitHub portab
 
 The isolated installer exercise used an earlier compact candidate and a separate QA application identity. It did not replace the author's real installation or browser registration. Final release payload checks are distinct from that upgrade exercise. Windows was not rebooted, prerequisite-missing virtual machines were not exercised, and no controlled speed comparison with IDM was performed. Executables remain unsigned.
 
-Both build worksoublis used production commit `be5d1f629e84fef65042a85183ac2bb6d1265351`. Later documentation, gallery and evidence changes do not alter the built production code. Exact sizes, SHA-256 values and final source commit are recorded in the release verification asset. Public release state and asset completeness are verified separately from local checks.
+Both build workflows used production commit `be5d1f629e84fef65042a85183ac2bb6d1265351`. Later documentation, gallery and evidence changes do not alter the built production code. Exact sizes, SHA-256 values and final source commit are recorded in the release verification asset. Public release state and asset completeness are verified separately from local checks.
 
 [Compact prerequisites and remaining gates](docs/COMPACT-WINDOWS-PREVIEW.md) · [Known boundaries](docs/LIMITATIONS.md)
 
@@ -111,6 +111,6 @@ The final rebuilt package also completed the two exact video URLs while minimize
 
 ## GitHub-built release binaries
 
-Both Windows editions were built and uploaded by the [successful Windows worksoubli](https://github.com/djingo-dev/soubli-download-manager/actions/runs/40110481341), after **198 source tests passed** on the Windows runner. The exact uploaded files were downloaded and matched the worksoubli SHA-256 receipt. The final portable passed Tools (25), interactions (38), and appearance (45) checks locally. The exact uploaded installer upgraded the user installation with its one completed task, preferences, stable startup and tray preserved. Both exact supplied public videos completed and fully decoded using the downloaded build.
+Both Windows editions were built and uploaded by the [successful Windows workflow](https://github.com/djingo-dev/soubli-download-manager/actions/runs/40110481341), after **198 source tests passed** on the Windows runner. The exact uploaded files were downloaded and matched the workflow SHA-256 receipt. The final portable passed Tools (25), interactions (38), and appearance (45) checks locally. The exact uploaded installer upgraded the user installation with its one completed task, preferences, stable startup and tray preserved. Both exact supplied public videos completed and fully decoded using the downloaded build.
 
 [Remote package/source comparison](docs/validation/remote-runtime-parity-v2.6.0.json) checks all 70 production source/UI/extension files with CRLF/LF normalization, and compares the bundled tools/native bridge byte for byte. [Build provenance](docs/validation/windows-build-provenance-v2.6.0.json) records the build commit; later documentation/evidence-only commits do not change production code.

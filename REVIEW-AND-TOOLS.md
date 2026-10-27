@@ -1,6 +1,6 @@
-# Worksoubli review
+# workflow review
 
-| Worksoubli | Tool | Boundary |
+| workflow | Tool | Boundary |
 | --- | --- | --- |
 | URL expires during transfer | Rescue download | Validator/sample checks; final publisher checksum still matters |
 | Complete record, moved disk file | Library health | Checks recorded locations, not all disks |

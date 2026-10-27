@@ -913,7 +913,7 @@ CommitDate: 2022-05-22
 
     Merge pull request #1929 from aria2/bump-ubuntu
     
-    Bump worksoubli ubuntu
+    Bump workflow ubuntu
 
 commit e0ef02d243f7ef721757433b3e9c044f3cf6aa2c
 Author:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
@@ -921,7 +921,7 @@ AuthorDate: 2022-05-22
 Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
 CommitDate: 2022-05-22
 
-    Bump worksoubli ubuntu
+    Bump workflow ubuntu
 
 commit 73cf6d110d9868838776265da51329ff28f5f0b2
 Merge: d4b96e24 2c21331a
@@ -1081,7 +1081,7 @@ AuthorDate: 2022-04-03
 Commit:     Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
 CommitDate: 2022-04-03
 
-    Run worksoubli on a pull request
+    Run workflow on a pull request
 
 commit aaf090d1a6cd437d1c84f08974ca650540ae76d8
 Merge: fee8e41d de99fc17

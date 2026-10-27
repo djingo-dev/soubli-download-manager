@@ -17,7 +17,7 @@ soubli's feature descriptions refer to implemented behavior, not a guarantee for
 | Media tools | One workshop job runs at a time. Trimming currently processes an already downloaded file. Subtitle/audio-track selection and direct time-range downloads are future work. |
 | Configuration backups | Exclude files, partials, keys, passwords and scanner/proxy secrets. Imported schedules remain disabled until explicitly enabled. Cross-device sync is not implemented. |
 | Updates | Release notifications and a trusted GitHub download-page button are implemented. Unattended download/install, waiting-for-transfers update orchestration and automatic rollback are not. |
-| Other worksoublis | Playlist subscriptions, watched link folders and reliable file-update subscriptions are not included yet. The site grabber inspects static HTML rather than running a complete browser crawler. |
+| Other workflows | Playlist subscriptions, watched link folders and reliable file-update subscriptions are not included yet. The site grabber inspects static HTML rather than running a complete browser crawler. |
 
 Another download manager can intercept a browser request before soubli receives it. In an older live test, an IDM native interceptor continued taking extensionless attachments after its Chrome extension was disabled; direct ZIP handoff succeeded. Keep this access condition separate from the result of a soubli transfer test.
 

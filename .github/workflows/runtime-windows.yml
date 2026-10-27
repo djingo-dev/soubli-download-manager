@@ -1,6 +1,6 @@
 name: Official full Windows runtime validation
 on:
-  worksoubli_dispatch:
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:

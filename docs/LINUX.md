@@ -40,4 +40,4 @@ npm run dist:linux -- --publish never
 xvfb-run -a node scripts/linux-package-qa.cjs
 ```
 
-The worksoubli uploads the three packages plus `Linux-Verification.json`. Publishing to Releases is a separate step after every platform gate passes.
+The workflow uploads the three packages plus `Linux-Verification.json`. Publishing to Releases is a separate step after every platform gate passes.
