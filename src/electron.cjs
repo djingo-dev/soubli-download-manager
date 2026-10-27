@@ -60,7 +60,10 @@ async function createWindow(background = process.argv.includes('--background')) 
   const mainWindow = win; guardWindow(win, web.origin, 'main'); if (toolsWindows) toolsWindows.main = win;
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   win.webContents.on('will-navigate', (event, url) => { if (new URL(url).origin !== web.origin) event.preventDefault(); });
-  win.webContents.session.setPermissionRequestHandler((_web, _permission, callback) => callback(false));
+  win.webContents.session.setPermissionRequestHandler((_web, permission, callback) => {
+    if (['clipboard-sanitized-write', 'clipboard-read'].includes(permission)) return callback(true);
+    callback(false);
+  });
   win.on('blur', () => { if (!mainWindow.isDestroyed() && !mainWindow.webContents.isDestroyed()) mainWindow.webContents.executeJavaScript('typeof closeDesktopMenus===\"function\"&&closeDesktopMenus()').catch(() => { }); });
   win.on('close', event => { if (!quitting && tray && !tray.isDestroyed() && service.store.settings.closeToTray) { event.preventDefault(); mainWindow.hide(); } });
   win.on('minimize', () => { if (!quitting && tray && !tray.isDestroyed() && service.store.settings.minimizeToTray) mainWindow.hide(); });
@@ -150,7 +153,19 @@ if (!app.requestSingleInstanceLock({ version: app.getVersion() })) {
     releaseProfile = require('./native-profile.cjs').acquireProfile(app.getPath('userData'));
     service = new Service(path.join(app.getPath('userData'), 'soubliData'), { protection: protectedStorage, desktop });
     // Use the user's Downloads folder for the first desktop launch.
-    if (!service.store.get('desktopInitialized')) { service.store.saveSettings({ downloadDir: path.join(app.getPath('downloads'), 'soubli') }); service.store.set('desktopInitialized', true); }
+    if (!service.store.get('desktopInitialized')) {
+      const baseDir = path.join(app.getPath('downloads'), 'soubli');
+      const cats = {
+        compressed: path.join(baseDir, 'Archives'),
+        documents: path.join(baseDir, 'Documents'),
+        music: path.join(baseDir, 'Audio'),
+        programs: path.join(baseDir, 'Programs'),
+        video: path.join(baseDir, 'Video'),
+        other: path.join(baseDir, 'Other')
+      };
+      service.store.saveSettings({ downloadDir: baseDir, categoryFolders: cats });
+      service.store.set('desktopInitialized', true);
+    }
     web = await createServer(service, Number(process.env.soubli_PORT) || 62100);
     if (service.store.settings.startAtLogin && !process.env.soubli_SMOKE_TEST && !process.env.soubli_QA_SCRIPT) try { startup.reconcile(); } catch (error) { writeLog(error); }
     runtimeEvent({ event: 'started', version: app.getVersion(), background: process.argv.includes('--background'), softwareRendering: !process.argv.includes('--soubli-hardware-acceleration') });

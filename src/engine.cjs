@@ -146,6 +146,16 @@ class Engine extends EventEmitter {
         if (ctx.etag && response.headers.etag && ctx.etag !== response.headers.etag || !this.settings().ignoreModified && ctx.modified && response.headers['last-modified'] && ctx.modified !== response.headers['last-modified']) throw Error('تغير الملف أثناء التحميل؛ تم إيقافه لمنع دمج نسخ مختلفة');
         if (!ctx.resumable && ctx.size && response.headers['content-length'] !== undefined && Number(response.headers['content-length']) !== ctx.size) throw Error('تغير حجم الملف بين الفحص وبدء التحميل');
         response.setTimeout?.(0); lastData = Date.now(); dataTimer = setInterval(() => { if (!ctx.stopped && !throttling && Date.now() - lastData > this.idleTimeout) response.destroy(Error('انتهت مهلة استقبال البيانات من الخادم')); }, Math.min(1000, this.idleTimeout)); dataTimer.unref();
+        const BUFFER_CAP = 65536;
+        let buf = null, bufOffset = s.current, bufLen = 0;
+        const flushBuffer = () => {
+          if (bufLen > 0 && ctx.fd !== null) {
+            fs.writeSync(ctx.fd, buf, 0, bufLen, bufOffset);
+            bufOffset += bufLen;
+            bufLen = 0;
+            buf = null;
+          }
+        };
         for await (const chunk of response) {
           lastData = Date.now();
           if (ctx.stopped || ctx.rebalance?.has(s.id)) break;
@@ -154,11 +164,37 @@ class Engine extends EventEmitter {
           if (ctx.stopped) break;
           // End offsets may have changed while this worker waited for the limiter.
           const count = Math.min(n, s.end - s.current); if (count <= 0) break;
-          fs.writeSync(ctx.fd, chunk, 0, count, s.current); s.current += count; ctx.retryAttempts.delete(s.id); if (ctx.retryNotice) { ctx.retryNotice = false; const latest = this.store.find(ctx.id); if (latest) this.store.update(ctx.id, { meta: JSON.stringify({ ...JSON.parse(latest.meta), transfer: { connections: ctx.connectionLimit, http1: ctx.http1 } }) }); } ctx.received += count; this.usage.bytes += count; this.usage.total += count;
-          if (Date.now() - ctx.checkpoint > 1000) this.checkpoint(ctx);
-          if (this.quotaReached()) { this.pause(ctx.id, 'limited'); break; }
+          if (count >= BUFFER_CAP && bufLen === 0) {
+            fs.writeSync(ctx.fd, chunk, 0, count, s.current);
+            bufOffset = s.current + count;
+          } else {
+            if (!buf) { buf = Buffer.allocUnsafe(BUFFER_CAP); bufOffset = s.current; bufLen = 0; }
+            if (bufLen + count <= BUFFER_CAP) {
+              chunk.copy(buf, bufLen, 0, count);
+              bufLen += count;
+            } else {
+              const fill = BUFFER_CAP - bufLen;
+              chunk.copy(buf, bufLen, 0, fill);
+              bufLen = BUFFER_CAP;
+              flushBuffer();
+              const remainder = count - fill;
+              if (remainder >= BUFFER_CAP) {
+                fs.writeSync(ctx.fd, chunk, fill, remainder, s.current + fill);
+                bufOffset = s.current + count;
+              } else if (remainder > 0) {
+                buf = Buffer.allocUnsafe(BUFFER_CAP);
+                chunk.copy(buf, 0, fill, count);
+                bufLen = remainder;
+                bufOffset = s.current + fill;
+              }
+            }
+          }
+          s.current += count; ctx.retryAttempts.delete(s.id); if (ctx.retryNotice) { ctx.retryNotice = false; const latest = this.store.find(ctx.id); if (latest) this.store.update(ctx.id, { meta: JSON.stringify({ ...JSON.parse(latest.meta), transfer: { connections: ctx.connectionLimit, http1: ctx.http1 } }) }); } ctx.received += count; this.usage.bytes += count; this.usage.total += count;
+          if (Date.now() - ctx.checkpoint > 1000) { flushBuffer(); this.checkpoint(ctx); }
+          if (this.quotaReached()) { flushBuffer(); this.pause(ctx.id, 'limited'); break; }
           if (s.current >= s.end) break;
         }
+        flushBuffer();
         if (!ctx.resumable && !ctx.stopped) { if (ctx.size && s.current !== ctx.size) throw Error('حجم البيانات المستلمة لا يطابق الملف'); s.end = s.current; ctx.size = s.current; }
         if (s.current >= s.end) { s.state = 'complete'; return; }
         if (!ctx.stopped) throw Error('انقطع الاتصال قبل اكتمال الجزء');
@@ -219,7 +255,9 @@ class Engine extends EventEmitter {
     }
   }
   async finish(ctx) {
-    if (ctx.stopped) return; const item = this.store.find(ctx.id); let dest = path.join(item.directory, item.name);
+    if (ctx.stopped) return; const item = this.store.find(ctx.id);
+    fs.mkdirSync(item.directory, { recursive: true });
+    let dest = path.join(item.directory, item.name);
     const ext = path.extname(item.name), stem = path.basename(item.name, ext); let i = 1;
     while (fs.existsSync(dest)) dest = path.join(item.directory, `${stem} (${i++})${ext}`);
     this.store.update(ctx.id, { status: 'processing', speed: 0 });

@@ -23,7 +23,10 @@ class ToolWindows {
     window = new this.BrowserWindow({ width: Math.min(kind === 'complete' ? 490 : kind === 'details' ? 550 : wide ? 850 : 660, area.width), height: Math.min(kind === 'complete' ? 370 : kind === 'details' ? 460 : wide ? 740 : 620, area.height), minWidth: 360, minHeight: 260, title: 'soubli', autoHideMenuBar: true, backgroundColor: '#ffffff', minimizable: true, maximizable: !['complete', 'details'].includes(kind), resizable: true, show: false, icon: path.join(__dirname, '../ui/logo.png'), webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false } });
     window.soubliDownloadId = data.id || null; window.soubliKind = kind; window.on('minimize', () => { if (this.service.store.settings.minimizeToTray && this.service.desktop?.runtimeStatus?.().trayResident) window.hide(); }); this.windows.set(key, window); window.setMenu(null); window.setPosition(Math.round(area.x + (area.width - window.getBounds().width) / 2), Math.round(area.y + (area.height - window.getBounds().height) / 2));
     window.webContents.setWindowOpenHandler(() => ({ action: 'deny' })); window.webContents.on('will-navigate', (e, url) => { if (new URL(url).origin !== this.origin) e.preventDefault(); });
-    window.webContents.session.setPermissionRequestHandler((_w, _p, done) => done(false));
+    window.webContents.session.setPermissionRequestHandler((_w, permission, done) => {
+      if (['clipboard-sanitized-write', 'clipboard-read'].includes(permission)) return done(true);
+      done(false);
+    });
     window.on('closed', () => { clearTimeout(window.soubliAttentionTimer); this.windows.delete(key); if (kind === 'shutdown') this.service.desktop?.cancelShutdown?.(); if (kind === 'download-info' && !this.closing && this.service.store.find(data.id)?.status === 'pending') this.service.action('remove', { id: data.id }).catch(() => { }); });
     const url = new URL(this.origin); url.searchParams.set('window', kind); for (const k of ['id', 'url', 'tab']) if (data[k]) url.searchParams.set(k, String(data[k]));
     this.guardWindow?.(window, url.href, kind);
