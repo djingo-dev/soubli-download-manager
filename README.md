@@ -12,8 +12,6 @@ Browser capture, playlists, torrents, queues and useful file tools — in one cu
 
 </div>
 
-<img src="docs/screenshots/v2.7/workspace-light.png" width="100%" alt="The actual soubli 2.7 workspace in light mode, with pinned tools and demonstration downloads">
-
 <p align="center"><sub>Actual application captures with demonstration records. Light, dark and Arabic layouts share the same workspace.</sub></p>
 
 ## Choose your soubli
@@ -23,15 +21,14 @@ Browser capture, playlists, torrents, queues and useful file tools — in one cu
 | Edition | Install | Run without installing | Download size |
 | :--- | :--- | :--- | :--- |
 | **Complete** · retained compatibility choice | [Windows setup](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-2.7.1-Setup.exe) | [Portable](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-2.7.1-Portable.exe) | 148.1 / 147.9 MB |
-| **Compact Preview** · optional smaller host | [Compact setup](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-2.7.1-Compact-Preview-Setup.exe) | [Compact portable](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-2.7.1-Compact-Preview-Portable.exe) | **59.5 / 62.1 MB** |
 
-[All release files](https://github.com/djingo-dev/soubli-download-manager/releases/tag/v2.7.1) · [SHA-256 checksums](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/SHA256SUMS.txt) · [Companion extension](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-Companion-2.7.1.zip) · [Source ZIP](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-2.7.1-Source.zip)
+[All release files](https://github.com/djingo-dev/soubli-download-manager/releases/tag/v2.7.1)
 
 Compact Preview keeps the same interface, complete official Node runtime, full FFmpeg, aria2 and video-extraction tools. It uses **shared Microsoft WebView2 and .NET Framework 4.8**, which are not part of the reported download size. It is an optional preview, with [its own compatibility and validation notes](docs/COMPACT-WINDOWS-PREVIEW.md). The complete edition remains available.
 
 Windows 10/11 **64-bit**. Windows 7/8/8.1 are unsupported. Linux packages are deferred. Executables are currently unsigned; see [publisher verification](docs/WINDOWS-SIGNING.md).
 
-<img src="docs/brand/worksoubli.svg" width="100%" alt="Capture a link. Choose quality, destination and limits. Carry on while soubli handles the queue.">
+<img src="docs/brand/workflow.svg" width="100%" alt="Capture a link. Choose quality, destination and limits. Carry on while soubli handles the queue.">
 
 ## More than a download list
 
@@ -103,17 +100,6 @@ Transfer and completion windows keep the essentials close: progress, speed, time
 - Read a clear error explanation, then open technical details only if needed.
 
 Use **Exit soubli** when you intentionally want to stop the service. Closing or minimizing a window is separate from exiting the application. [Startup and stability →](docs/STABILITY.md)
-
-## At home in light, dark and Arabic
-
-<table>
-<tr>
-<td width="50%"><img src="docs/screenshots/v2.7/workspace-dark.png" width="100%" alt="soubli's dark workspace in English"><br><b>Quiet after dark.</b><br>Follow your system or keep your own preference.</td>
-<td width="50%"><img src="docs/screenshots/v2.7/workspace-arabic.png" width="100%" alt="soubli's actual Arabic right-to-left workspace"><br><b>A complete RTL workspace.</b><br>Navigation, tools and transfer windows follow your language.</td>
-</tr>
-</table>
-
-[See the complete gallery →](docs/SCREENSHOTS.md)
 
 ## Get started
 
