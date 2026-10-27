@@ -52,7 +52,7 @@
     "extension/popup.css",
     "extension/popup.html",
     "extension/popup.js",
-    "native/soubliNativeHost.exe",
+    "native/SoubliNativeHost.exe",
     "vendor/GPL-3.0.txt",
     "vendor/yt-dlp-LICENSE.txt",
     "vendor/yt-dlp-THIRD-PARTY-LICENSES.txt",

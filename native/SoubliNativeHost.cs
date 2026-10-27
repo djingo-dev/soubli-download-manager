@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 // Chrome Native Messaging host. Stdout is reserved exclusively for framed JSON.
-class soubliNativeHost {
+class SoubliNativeHost {
   [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)] struct StartupInfo { public int cb; public string reserved, desktop, title; public int x,y,xSize,ySize,xCountChars,yCountChars,fillAttribute,flags; public short showWindow,reserved2; public IntPtr reservedPtr,stdInput,stdOutput,stdError; }
   [StructLayout(LayoutKind.Sequential)] struct ProcessInfo { public IntPtr process,thread; public int processId,threadId; }
   [DllImport("kernel32.dll", CharSet=CharSet.Unicode, SetLastError=true)] static extern bool CreateProcess(string app, StringBuilder command, IntPtr processAttributes, IntPtr threadAttributes, bool inheritHandles, int creationFlags, IntPtr environment, string directory, ref StartupInfo startup, out ProcessInfo info);
@@ -49,7 +49,7 @@ class soubliNativeHost {
     // A background desktop must not inherit the browser's framed stdio pipes.
     var startup = new StartupInfo(); startup.cb = Marshal.SizeOf(startup); startup.flags = 1; startup.showWindow = 0;
     ProcessInfo info;
-    if (!CreateProcess(executable, new StringBuilder("\"" + executable + "\" " + Value(config, "arguments")), IntPtr.Zero, IntPtr.Zero, false, 0x208, IntPtr.Zero, Path.GetDirectoryName(executable), ref startup, out info)) throw new Exception("Could not start soubli: " + Marshal.GetLastWin32Error());
+    if (!CreateProcess(executable, new StringBuilder("\"" + executable + "\" " + Value(config, "arguments")), IntPtr.Zero, IntPtr.Zero, false, 0x208, IntPtr.Zero, Path.GetDirectoryName(executable), ref startup, out info)) throw new Exception("Could not start Soubli: " + Marshal.GetLastWin32Error());
     CloseHandle(info.process); CloseHandle(info.thread);
   }
   static void Main(string[] args) {

@@ -13,14 +13,14 @@ class BrowserBridge {
     fs.mkdirSync(this.root, { recursive: true });
     fs.cpSync(path.join(__dirname, '../extension'), this.extensionPath, { recursive: true });
     if (process.platform === 'linux') { const result = require('./linux.cjs').registerLinux(this); this.service.store.saveSettings({ integration: true }); return result; }
-    const host = path.join(this.root, 'soubliNativeHost.exe'), source = this.app.isPackaged ? path.join(process.resourcesPath, 'app.asar.unpacked/native/soubliNativeHost.exe') : path.join(__dirname, '../native/soubliNativeHost.exe');
+    const host = path.join(this.root, 'SoubliNativeHost.exe'), source = this.app.isPackaged ? path.join(process.resourcesPath, 'app.asar.unpacked/native/SoubliNativeHost.exe') : path.join(__dirname, '../native/SoubliNativeHost.exe');
     if (!fs.existsSync(host) || !fs.readFileSync(source).equals(fs.readFileSync(host))) fs.copyFileSync(source, host);
     await this.configure(host);
     fs.writeFileSync(this.manifestPath, JSON.stringify({ name: HOST, description: 'soubli desktop download manager', path: host, type: 'stdio', allowed_origins: [`chrome-extension://${extensionId}/`] }, null, 2));
     await require('./windows-bridge.cjs').register(this.manifestPath, HOST);
     this.service.store.saveSettings({ integration: true }); return this.info();
   }
-  async configure(host = path.join(this.root, 'soubliNativeHost.exe')) {
+  async configure(host = path.join(this.root, 'SoubliNativeHost.exe')) {
     if (!fs.existsSync(host)) return;
     const executable = this.app.soubliExecutable || process.env.PORTABLE_EXECUTABLE_FILE || process.execPath;
     const args = this.app.soubliArguments || (this.app.isPackaged ? '--background' : `"${this.app.getAppPath()}" --background`);

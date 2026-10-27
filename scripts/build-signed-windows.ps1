@@ -6,7 +6,7 @@ if(!$cert.HasPrivateKey -or $cert.NotAfter -le (Get-Date)){throw 'The signing ce
 $tools=@(Get-ChildItem -Path "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" -ErrorAction SilentlyContinue | Sort-Object FullName -Descending)
 if(!$tools.Count){throw 'Install the Windows SDK Signing Tools first.'}
 $signTool=$tools[0].FullName
-$payload=@((Join-Path $project 'native\soubliNativeHost.exe'),(Join-Path $project 'vendor\yt-dlp.exe'),(Join-Path $project 'vendor\aria2\aria2c.exe'),(Join-Path $project 'node_modules\ffmpeg-static\ffmpeg.exe'))
+$payload=@((Join-Path $project 'native\SoubliNativeHost.exe'),(Join-Path $project 'vendor\yt-dlp.exe'),(Join-Path $project 'vendor\aria2\aria2c.exe'),(Join-Path $project 'node_modules\ffmpeg-static\ffmpeg.exe'))
 foreach($file in $payload){
  if(!(Test-Path -LiteralPath $file)){throw "Missing bundled executable: $file"}
  if((Get-AuthenticodeSignature -LiteralPath $file).Status -ne 'Valid'){

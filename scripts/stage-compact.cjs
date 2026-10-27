@@ -10,7 +10,7 @@ function stage(config) {
     for (const name of ['src', 'ui', 'extension', 'vendor']) copy(path.join(source, name), path.join(app, name));
     for (const name of fs.readdirSync(source).filter(n => n.endsWith('.md') || ['LICENSE', 'package.json', 'package-lock.json'].includes(n))) copy(path.join(source, name), path.join(app, name));
     for (const [name, entry] of Object.entries(lock.packages)) { if (!name.startsWith('node_modules/') || entry.dev) continue; const from = path.join(dependencies, name.slice('node_modules/'.length)); if (!fs.existsSync(from)) { if (entry.optional) continue; throw Error('Missing production dependency: ' + name); } copy(from, path.join(app, name)); }
-    copy(config.extractor, path.join(app, 'vendor/yt-dlp-unpacked')); copy(path.join(source, 'native/soubliNativeHost.exe'), path.join(app, 'native/soubliNativeHost.exe'));
+    copy(config.extractor, path.join(app, 'vendor/yt-dlp-unpacked')); copy(path.join(source, 'native/SoubliNativeHost.exe'), path.join(app, 'native/SoubliNativeHost.exe'));
     copy(config.shell, target); copy(config.node, path.join(target, 'runtime/node.exe')); copy(config.nodeLicense, path.join(target, 'runtime/LICENSE.txt'));
     copy(path.join(config.sdk, 'LICENSE.txt'), path.join(target, 'licenses/WebView2-LICENSE.txt')); copy(path.join(config.sdk, 'NOTICE.txt'), path.join(target, 'licenses/WebView2-NOTICE.txt'));
     // Windows uses the unchanged node/realm.node. Mobile development archives are not Windows runtime features.

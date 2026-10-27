@@ -6,5 +6,5 @@ module.exports = {
     directories: { ...original.directories, output: 'release-compact' },
     afterPack: undefined,
     win: { ...original.win, target: ['nsis'] },
-    nsis: { ...original.nsis, differentialPackage: false, artifactName: 'soubli-${version}-Compact-Preview-Setup.${ext}', include: 'build/compact-installer.nsh' }
+    nsis: { ...original.nsis, differentialPackage: false, artifactName: 'Soubli-${version}-Compact-Preview-Setup.${ext}', include: 'build/compact-installer.nsh' }
 };

@@ -11,10 +11,12 @@
     "start": "electron .",
     "web": "node src/server.cjs",
     "test": "node --test --test-concurrency=1 test/*.test.cjs",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder --win portable nsis",
+    
+    "pack": "npm run native && electron-builder --dir",
+    "dist": "npm run native && electron-builder --win portable nsis",
     "postinstall": "node scripts/setup.cjs",
     "native": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-native.ps1",
+    
     "dist:linux": "electron-builder --linux AppImage deb rpm --x64",
     "prepare:linux": "node scripts/prepare-linux.cjs"
   },
@@ -36,7 +38,7 @@
   "build": {
     "npmRebuild": false,
     "appId": "local.soubli.downloads",
-    "productName": "soubli",
+    "productName": "Soubli",
     "asarUnpack": [
       "node_modules/realm/**",
       "node_modules/ffmpeg-static/**",
@@ -56,7 +58,7 @@
       "README.md",
       "FEATURES.md",
       "THIRD-PARTY-NOTICES.md",
-      "native/soubliNativeHost.exe",
+      "native/SoubliNativeHost.exe",
       "vendor/**",
       "BROWSER-INTEGRATION.md",
       "RESEARCH-AND-UPGRADES.md",
@@ -78,10 +80,10 @@
       "icon": "build/ico.ico"
     },
     "portable": {
-      "artifactName": "soubli-${version}-Portable.${ext}"
+      "artifactName": "Soubli-${version}-Portable.${ext}"
     },
     "nsis": {
-      "artifactName": "soubli-${version}-Setup.${ext}",
+      "artifactName": "Soubli-${version}-Setup.${ext}",
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": false,
@@ -98,19 +100,19 @@
       "category": "Network",
       "icon": "ui/logo.png",
       "executableName": "soubli",
-      "artifactName": "soubli-${version}-linux-${arch}.${ext}",
+      "artifactName": "Soubli-${version}-linux-${arch}.${ext}",
       "desktop": {
         "entry": {
           "Name": "Soubli Download Manager",
           "Comment": "A simple, local-first download manager",
           "Keywords": "download;manager;video;queue;",
-          "StartupWMClass": "soubli-download-manager"
+          "StartupWMClass": "Soubli-download-manager"
         }
       },
-      "maintainer": "Wajdii Afroo <82710469+Mohamedabdelnaby1@users.noreply.github.com>"
+      "maintainer": "Wajdii Afroo"
     },
     "deb": {
-      "artifactName": "soubli-${version}-linux-amd64.deb",
+      "artifactName": "Soubli-${version}-linux-amd64.deb",
       "depends": [
         "libgtk-3-0",
         "libnotify4",
@@ -126,7 +128,7 @@
       ]
     },
     "rpm": {
-      "artifactName": "soubli-${version}-linux-x86_64.rpm",
+      "artifactName": "Soubli-${version}-linux-x86_64.rpm",
       "depends": [
         "gtk3",
         "libnotify",

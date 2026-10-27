@@ -33,7 +33,7 @@ const child = (exe, args, input) => new Promise((resolve, reject) => { const p =
 function frame(value) { const body = Buffer.from(JSON.stringify(value)), head = Buffer.alloc(4); head.writeUInt32LE(body.length); return Buffer.concat([head, body]); }
 test('real Windows native host protects token, verifies origin, and downloads an authenticated file', { skip: process.platform !== 'win32' }, async () => {
   const { Service } = require('../src/service.cjs'), { createServer } = require('../src/server.cjs'), { extensionId } = require('../src/browser.cjs');
-  const root = path.join(require('node:os').tmpdir(), 'soubli-tests/native-test-' + Date.now()); fs.mkdirSync(root, { recursive: true }); const exe = path.join(root, 'soubliNativeHost.exe'); fs.copyFileSync(path.join(__dirname, '../native/soubliNativeHost.exe'), exe);
+  const root = path.join(require('node:os').tmpdir(), 'soubli-tests/native-test-' + Date.now()); fs.mkdirSync(root, { recursive: true }); const exe = path.join(root, 'SoubliNativeHost.exe'); fs.copyFileSync(path.join(__dirname, '../native/SoubliNativeHost.exe'), exe);
   const bytes = Buffer.from('Authorized native download fixture '.repeat(2000));
   const fixture = http.createServer((req, res) => { if (req.headers.cookie !== 'session=test-auth' || req.headers.referer !== 'https://example.test/page') { res.writeHead(401); res.end(); return; } let start = 0, end = bytes.length - 1; const m = /bytes=(\d+)-(\d*)/.exec(req.headers.range || ''); if (m) { start = +m[1]; if (m[2]) end = Math.min(+m[2], end); } res.writeHead(m ? 206 : 200, { 'content-length': end - start + 1, etag: '"auth-v1"', ...(m ? { 'content-range': `bytes ${start}-${end}/${bytes.length}` } : {}) }); res.end(bytes.subarray(start, end + 1)); });
   await new Promise(r => fixture.listen(0, '127.0.0.1', r)); const s = new Service(path.join(root, 'data')); s.store.saveSettings({ integration: true, retries: 0 }); const web = await createServer(s, 0);
@@ -50,7 +50,7 @@ test('real Windows native host protects token, verifies origin, and downloads an
 });
 test('native host starts the closed desktop service and completes its handshake', { skip: process.platform !== 'win32' }, async () => {
   const { Service } = require('../src/service.cjs'), { extensionId } = require('../src/browser.cjs');
-  const root = path.join(require('node:os').tmpdir(), 'soubli-tests/native-launch-' + Date.now()); fs.mkdirSync(root, { recursive: true }); const exe = path.join(root, 'soubliNativeHost.exe'); fs.copyFileSync(path.join(__dirname, '../native/soubliNativeHost.exe'), exe);
+  const root = path.join(require('node:os').tmpdir(), 'soubli-tests/native-launch-' + Date.now()); fs.mkdirSync(root, { recursive: true }); const exe = path.join(root, 'SoubliNativeHost.exe'); fs.copyFileSync(path.join(__dirname, '../native/SoubliNativeHost.exe'), exe);
   const s = new Service(path.join(root, 'data')); s.store.saveSettings({ integration: true }); const token = s.extensionToken; await s.close();
   const reserve = require('node:net').createServer(); await new Promise(r => reserve.listen(0, '127.0.0.1', r)); const port = reserve.address().port; await new Promise(r => reserve.close(r));
   await child(exe, ['--configure'], JSON.stringify({ address: `http://127.0.0.1:${port}`, extensionId, token, executable: process.execPath, arguments: `"${path.join(__dirname, 'native-launch-fixture.cjs')}" "${root}" ${port}` }));
