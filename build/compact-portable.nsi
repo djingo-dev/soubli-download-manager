@@ -23,7 +23,7 @@ Var soubliParameters
 Var soubliExtractionMutex
 Function .onInit
   ${IfNot} ${RunningX64}
-    MessageBox MB_OK|MB_ICONINFORMATION "soubli requires 64-bit Windows 10 or Windows 11."
+    MessageBox MB_OK|MB_ICONINFORMATION "Soubli requires 64-bit Windows 10 or Windows 11."
     Quit
   ${EndIf}
   SetRegView 64
@@ -36,7 +36,7 @@ Section
   System::Call 'kernel32::WaitForSingleObject(p r0, i 60000) i.r1'
   ${If} $1 != 0
   ${AndIf} $1 != 128
-    MessageBox MB_OK|MB_ICONINFORMATION "soubli's portable files are still being prepared. Try opening soubli again."
+    MessageBox MB_OK|MB_ICONINFORMATION "Soubli's portable files are still being prepared. Try opening Soubli again."
     SetErrorLevel 1618
     Quit
   ${EndIf}
@@ -49,7 +49,7 @@ Section
     nsExec::Exec '"$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -Command "$$ErrorActionPreference=1; try { $$target=$$env:soubli_PORTABLE_TARGET; if (Get-CimInstance Win32_Process | Where-Object { $$_.ExecutablePath -and ($$_.ExecutablePath -eq (Join-Path $$target soubli.exe) -or $$_.ExecutablePath -eq (Join-Path $$target runtime\node.exe)) }) { exit 1 }; exit 0 } catch { exit 2 }"'
     Pop $0
     ${If} $0 != 0
-      MessageBox MB_OK|MB_ICONINFORMATION "Exit soubli from its tray menu before repairing these portable files. Running downloads have been kept."
+      MessageBox MB_OK|MB_ICONINFORMATION "Exit Soubli from its tray menu before repairing these portable files. Running downloads have been kept."
       SetErrorLevel 1618
       Goto portableDone
     ${EndIf}
@@ -57,7 +57,7 @@ Section
     ClearErrors
     File /r "${PAYLOAD_DIR}\*.*"
     ${If} ${Errors}
-      MessageBox MB_OK|MB_ICONINFORMATION "soubli could not prepare its portable files. Check free disk space and try again. Your library has been kept."
+      MessageBox MB_OK|MB_ICONINFORMATION "Soubli could not prepare its portable files. Check free disk space and try again. Your library has been kept."
       SetErrorLevel 1603
       Goto portableDone
     ${EndIf}
@@ -72,7 +72,7 @@ Section
     ClearErrors
     Exec '"$soubliCache\soubli.exe" $soubliParameters'
     ${If} ${Errors}
-      MessageBox MB_OK|MB_ICONINFORMATION "soubli could not open. Reopen it to try again. Your library and saved download parts have been kept."
+      MessageBox MB_OK|MB_ICONINFORMATION "Soubli could not open. Reopen it to try again. Your library and saved download parts have been kept."
       SetErrorLevel 1603
     ${EndIf}
   portableDone:

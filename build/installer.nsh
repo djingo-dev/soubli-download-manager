@@ -21,7 +21,7 @@
   Var soubliReinstallRadio
   Var soubliUninstallRadio
   !define MUI_WELCOMEPAGE_TITLE "Welcome to Soubli ${VERSION}"
-  !define MUI_WELCOMEPAGE_TEXT "Soubli Download Manager$\r$\n$\r$\nCreated by Wajdii Afroo$\r$\nfacebook.com/wajdiiafroo0610$\r$\n$\r$\nThis wizard will install soubli on your computer. Click Next to continue."
+  !define MUI_WELCOMEPAGE_TEXT "Soubli Download Manager$\r$\n$\r$\nCreated by Wajdii Afroo$\r$\nfacebook.com/wajdiiafroo0610$\r$\n$\r$\nThis wizard will install Soubli on your computer. Click Next to continue."
   !insertmacro MUI_PAGE_WELCOME
   Page custom soubliMaintenancePage soubliMaintenanceLeave
 

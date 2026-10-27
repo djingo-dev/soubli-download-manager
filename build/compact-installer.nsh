@@ -5,7 +5,7 @@
   ReadRegDWORD $0 HKLM "SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full" "Release"
   ${If} $0 < 528040
     IfSilent compactMissingPrerequisite
-    MessageBox MB_YESNO|MB_ICONINFORMATION "soubli requires Microsoft .NET Framework 4.8. Open Microsoft's download page? Setup will stop without replacing your existing soubli installation." IDNO compactMissingPrerequisite
+    MessageBox MB_YESNO|MB_ICONINFORMATION "Soubli requires Microsoft .NET Framework 4.8. Open Microsoft's download page? Setup will stop without replacing your existing Soubli installation." IDNO compactMissingPrerequisite
     ExecShell "open" "https://dotnet.microsoft.com/download/dotnet-framework/net48"
     Goto compactMissingPrerequisite
   ${EndIf}
@@ -23,7 +23,7 @@
   ${VersionCompare} "$0" "120.0.0.0" $2
   ${If} $2 == 2
     IfSilent compactMissingPrerequisite
-    MessageBox MB_YESNO|MB_ICONINFORMATION "soubli requires the shared Microsoft WebView2 Runtime. Open Microsoft's download page? Setup will stop without replacing your existing soubli installation. soubli's download and media tools are included in this package." IDNO compactMissingPrerequisite
+    MessageBox MB_YESNO|MB_ICONINFORMATION "Soubli requires the shared Microsoft WebView2 Runtime. Open Microsoft's download page? Setup will stop without replacing your existing Soubli installation. Soubli's download and media tools are included in this package." IDNO compactMissingPrerequisite
     ExecShell "open" "https://developer.microsoft.com/microsoft-edge/webview2/"
     Goto compactMissingPrerequisite
   ${EndIf}
@@ -44,7 +44,7 @@
   Pop $0
   ${If} $0 != 0
     IfSilent compactsoubliBusy
-    MessageBox MB_RETRYCANCEL|MB_ICONINFORMATION "Exit soubli from its tray menu before updating. Running downloads will not be terminated by this installer." IDRETRY compactsoubliRetry
+    MessageBox MB_RETRYCANCEL|MB_ICONINFORMATION "Exit Soubli from its tray menu before updating. Running downloads will not be terminated by this installer." IDRETRY compactsoubliRetry
     compactsoubliBusy:
     SetErrorLevel 1618
     Quit
