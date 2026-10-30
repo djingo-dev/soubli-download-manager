@@ -1773,6 +1773,11 @@ body.native-window {
     align-items: center;
     margin-bottom: 10px
 }
+.native-window #add-form .folder-shortcuts {
+    grid-column: 2;
+    width: 100%;
+    margin-top: 4px;
+}
 
 .native-window #add-form>.field>label {
     margin: 0
