@@ -53,7 +53,110 @@
     const grip = main;
     make('⋯', 'Video button options', 'control options', showPanelOptions);
     main.oncontextmenu = e => { e.preventDefault(); showPanelOptions(); };
-    const cleanStyle = document.createElement('style'); cleanStyle.textContent = '.bar{background:#f5faf7;color:#234e43;border-color:#d4e4db;border-radius:12px;box-shadow:0 2px 10px #00000024;backdrop-filter:none;padding:3px;gap:1px}.bar button{min-height:30px}.bar .main{display:flex;gap:7px;align-items:center;font:600 12px/1.2 Segoe UI,Tahoma,sans-serif;padding:5px 8px;cursor:pointer;border-radius:8px;touch-action:none}.main:hover,.bar .control:hover{background:#e0eee7}.bar .control{width:24px;min-height:28px;padding:0;font:700 19px/1 Segoe UI,sans-serif;color:#4b6b5e;border-radius:8px;border-left:1px solid #d7e4dd}.main:active{cursor:grabbing}.menu{border-color:#d4e4db;box-shadow:0 6px 24px #00000026;font-size:12px}.menu button{padding:11px 14px}.menu button:hover{background:#eaf3ee}.menu .menu-close{background:#f0f6f2;color:#234e43}@media(prefers-color-scheme:dark){.bar{background:#243c33;color:#ecf6ef;border-color:#4b6357}.main:hover,.bar .control:hover{background:#395347}.bar .control{color:#d3e5d8;border-left-color:#496154}}'; shadow.append(cleanStyle);
+    const cleanStyle = document.createElement('style'); cleanStyle.textContent = `
+.bar {
+  background: rgba(15, 23, 42, 0.85);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 4px 6px;
+  gap: 3px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+.bar:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  transform: translateY(-1px);
+}
+.bar button {
+  min-height: 28px;
+  transition: all 0.15s ease;
+}
+.bar .main {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font: 600 12px/1.2 'Segoe UI', system-ui, sans-serif;
+  padding: 5px 12px 5px 8px;
+  cursor: pointer;
+  border-radius: 20px;
+  touch-action: none;
+  color: #f1f5f9;
+}
+.bar .main svg {
+  color: #38bdf8;
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.6));
+}
+.main:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.bar .control {
+  width: 26px;
+  min-height: 28px;
+  padding: 0;
+  font: 700 16px/1 'Segoe UI', sans-serif;
+  color: #94a3b8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bar .control:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+}
+.menu {
+  background: rgba(15, 23, 42, 0.94);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 6px;
+  font-size: 12px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  animation: soubliMenuFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes soubliMenuFadeIn {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.menu button {
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: none;
+  color: #e2e8f0;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.menu button:hover {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+}
+.menu .menu-close {
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.menu .menu-close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+.menu small {
+  color: #94a3b8;
+  font-size: 10px;
+}
+.note {
+  padding: 8px 12px;
+  color: #94a3b8;
+}
+`; shadow.append(cleanStyle);
     let drag;
     grip.onkeydown = e => { if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return; e.preventDefault(); const r = panel.getBoundingClientRect(), step = e.shiftKey ? 25 : 10; panel.style.left = soubliPanelModel.clamp(r.left + (e.key === 'ArrowRight' ? step : e.key === 'ArrowLeft' ? -step : 0), 0, Math.max(0, innerWidth - r.width)) + 'px'; panel.style.top = soubliPanelModel.clamp(r.top + (e.key === 'ArrowDown' ? step : e.key === 'ArrowUp' ? -step : 0), 0, Math.max(0, innerHeight - r.height)) + 'px'; savePosition(); };
     grip.onpointerdown = e => { if (e.button !== 0) return; const r = panel.getBoundingClientRect(); drag = { id: e.pointerId, x: e.clientX, y: e.clientY, left: r.left, top: r.top }; grip.setPointerCapture(e.pointerId); e.preventDefault(); };
@@ -96,7 +199,7 @@
       const r = await chrome.runtime.sendMessage({ type: 'media' }); if (request !== menuRequest || lifecycle.signal.aborted) return; if (r.error) throw Error(r.error); lastMedia = r.result.media || [];
       const page = currentVideoPage(), direct = [...mediaElements('video')].map(v => v.currentSrc).filter(u => /^https?:/.test(u)).map(url => ({ url, type: 'media', name: '' }));
       const sources = soubliMediaModel.select([...lastMedia, ...direct]);
-      if (page) { append('↓ This video — choose quality and merge audio', async b => { b.disabled = true; const result = await chrome.runtime.sendMessage({ type: 'download', url: page, mode: 'site', name: document.title }); if (result.error) throw Error(result.error); notify('Choose video quality in the soubli desktop confirmation window.'); closeMediaMenu(); }); }
+      if (page) { append('? Download Video / Audio (All Qualities)', async b => { b.disabled = true; const result = await chrome.runtime.sendMessage({ type: 'download', url: page, mode: 'site', name: document.title }); if (result.error) throw Error(result.error); notify('Choose video quality in the soubli desktop confirmation window.'); closeMediaMenu(); }); }
       else for (const item of sources) { const b = append(item.label, async b => { b.disabled = true; const result = await chrome.runtime.sendMessage({ type: 'download', url: item.url, name: item.fileName, mode: item.mode }); if (result.error) throw Error(result.error); notify('Check the download confirmation window in soubli.'); closeMediaMenu(); }); b.title = item.kind === 'stream' ? 'Full stream — soubli assembles segments automatically' : item.kind === 'audio' ? 'Direct audio source' : 'Direct video source — audio may be separate'; const small = document.createElement('small'); small.textContent = b.title; b.append(small); }
       if (!sources.length && !page && visibleVideo() && !encryptedVideos.has(visibleVideo())) append('Try extracting this video page', async b => { b.disabled = true; const result = await chrome.runtime.sendMessage({ type: 'download', url: location.href, name: document.title || 'Video', mode: 'site' }); if (result.error) throw Error(result.error); closeMediaMenu(); });
       if (encryptedVideos.has(visibleVideo())) { const note = document.createElement('div'); note.className = 'note'; note.textContent = 'This player uses protected media. soubli cannot download protected streams.'; menu.append(note); }

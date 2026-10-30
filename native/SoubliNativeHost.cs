@@ -77,6 +77,7 @@ class SoubliNativeHost {
           try { result = Request(type, message); }
           catch (WebException ex) {
             if (ex.Response != null) { using (var reader = new StreamReader(ex.Response.GetResponseStream())) throw new Exception(reader.ReadToEnd()); }
+            if (type != "download") throw new Exception("Soubli is not running");
             Launch();
             for (int attempt = 0; attempt < 100; attempt++) {
               Thread.Sleep(150);

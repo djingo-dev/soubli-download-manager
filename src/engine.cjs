@@ -13,7 +13,7 @@ function fileName(value) {
 }
 function category(name) {
   const ext = name.split('.').pop().toLowerCase();
-  return /^(zip|rar|7z|tar|gz|bz2|xz)$/.test(ext) ? 'compressed' : /^(pdf|docx?|xlsx?|pptx?|txt|csv|epub)$/.test(ext) ? 'documents' : /^(mp3|wav|ogg|flac|aac|m4a)$/.test(ext) ? 'music' : /^(mp4|mkv|mov|avi|webm|ts|m3u8|mpd)$/.test(ext) ? 'video' : /^(exe|msi|iso|dmg|apk|deb|appimage)$/.test(ext) ? 'programs' : 'other';
+  return /^(zip|rar|7z|tar|gz|bz2|xz|iso|tgz|zst|cab)$/.test(ext) ? 'compressed' : /^(pdf|docx?|xlsx?|pptx?|txt|csv|epub|rtf|odt|ods|odp)$/.test(ext) ? 'documents' : /^(mp3|wav|ogg|flac|aac|m4a|wma|opus|aiff)$/.test(ext) ? 'music' : /^(mp4|mkv|mov|avi|webm|ts|m3u8|mpd|flv|wmv|3gp|vob)$/.test(ext) ? 'video' : /^(exe|msi|dmg|pkg|apk|deb|rpm|appimage|bin|run|jar)$/.test(ext) ? 'programs' : 'other';
 }
 class Engine extends EventEmitter {
   constructor(store, options = {}) {
@@ -69,7 +69,15 @@ class Engine extends EventEmitter {
   }
   async run(ctx) {
     const item = ctx.item, meta = JSON.parse(item.meta);
-    if (require('./video.cjs').isPlaylist(item.url)) throw Error('هذا رابط قائمة فيديوهات. افتح الأدوات ← قوائم الفيديو لإضافة القائمة كاملة.');
+    // Allow watch?v=...&list=... to download single video, only block pure /playlist links
+    try {
+      const u = new URL(item.url);
+      if (u.pathname === '/playlist' && !u.searchParams.get('v')) {
+        throw Error('??? ???? ????? ????? ?????. ???? ??????? ????? ??????? ???????? ???? ?????.');
+      }
+    } catch (e) {
+      if (e.message.includes('????? ?????')) throw e;
+    }
     fs.mkdirSync(this.settings().tempDir, { recursive: true }); fs.mkdirSync(item.directory, { recursive: true });
     ctx.temp = path.join(this.settings().tempDir, item.id + '.part');
     if (this.workerClient) return this.workerClient.transfer(ctx);
