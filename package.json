@@ -1,6 +1,6 @@
 {
   "name": "soubli-download-manager",
-  "version": "2.7.5",
+  "version": "2.7.6",
   "description": "Local-first download manager with Realm and an Electron shell",
   "main": "src/electron.cjs",
   "private": true,
@@ -11,12 +11,10 @@
     "start": "electron .",
     "web": "node src/server.cjs",
     "test": "node --test --test-concurrency=1 test/*.test.cjs",
-    
     "pack": "npm run native && electron-builder --dir",
     "dist": "npm run native && electron-builder --win portable nsis",
     "postinstall": "node scripts/setup.cjs",
     "native": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-native.ps1",
-    
     "dist:linux": "electron-builder --linux AppImage deb rpm --x64",
     "prepare:linux": "node scripts/prepare-linux.cjs"
   },

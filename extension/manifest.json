@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Soubli Companion",
-  "version": "2.7.5",
+  "version": "2.7.6",
   "description": "Desktop downloads, context menus, media detection and authorized session handoff.",
   "permissions": [
     "contextMenus",

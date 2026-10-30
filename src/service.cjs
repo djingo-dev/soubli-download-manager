@@ -109,6 +109,9 @@ class Service {
       case 'updatesPreferences': return this.updates.setEnabled(data.enabled);
       case 'updatesLater': return this.updates.snooze();
       case 'updatesSkip': return this.updates.skip();
+      case 'updatesDownload': if (!this.desktop) throw Error('In-app downloads require the desktop edition.'); if (this.updates.downloadState?.status !== 'downloading') this.updates.download({ portable: !!data?.portable }).catch(() => {}); return this.updates.snapshot();
+      case 'updatesCancelDownload': return this.updates.cancelDownload();
+      case 'updatesApply': { if (!this.desktop) throw Error('Applying updates requires the desktop edition.'); const dl = this.updates.downloadState; if (!dl || dl.status !== 'ready' || !dl.path) throw Error('Download the update first.'); return this.desktop.applyUpdate(dl); }
       case 'libraryHealth': return this.smart.run(() => this.smart.library());
       case 'verifyFile': return this.smart.verify(data.id, data.expected, data.algorithm);
       case 'rescueLink': return this.smart.rescue(data.id, data.url, cleanHeaders(data.headers));

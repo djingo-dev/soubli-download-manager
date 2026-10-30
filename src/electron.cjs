@@ -84,7 +84,7 @@ if (!app.requestSingleInstanceLock({ version: app.getVersion() })) {
     if (!protectedStorage && process.platform !== 'linux') throw Error('تعذر الوصول إلى مخزن مفاتيح النظام الآمن');
     startup = new StartupManager(app, { portable: process.env.PORTABLE_EXECUTABLE_FILE || process.env.APPIMAGE });
     const desktop = {
-      runtimeStatus: () => ({ version: app.getVersion(), engine: service?.engineHost?.snapshot() || null, shutdown: completionPower?.snapshot() || null, platform: process.platform, keyProtection: protectedStorage ? 'system-keyring' : 'local-private-key', startup: startup.status(), trayResident: !!tray && !tray.isDestroyed(), softwareRendering: !process.argv.includes('--soubli-hardware-acceleration'), rendererRecoveries: win?.soubliRecovery?.recovered || 0 }),
+      runtimeStatus: () => ({ version: app.getVersion(), engine: service?.engineHost?.snapshot() || null, shutdown: completionPower?.snapshot() || null, platform: process.platform, keyProtection: protectedStorage ? 'system-keyring' : 'local-private-key', startup: startup.status(), trayResident: !!tray && !tray.isDestroyed(), softwareRendering: !process.argv.includes('--soubli-hardware-acceleration'), rendererRecoveries: win?.soubliRecovery?.recovered || 0, portable: !!process.env.PORTABLE_EXECUTABLE_FILE }),
       downloadInfo: async (id, status = 'pending') => { for (let n = 0; n < 200 && !toolsWindows; n++)await new Promise(r => setTimeout(r, 50)); if (!toolsWindows) throw Error('نافذة التطبيق لم تجهز بعد'); return toolsWindows.open(status === 'pending' ? 'download-info' : 'details', { id }); },
       peerInfo: () => toolsWindows?.open('tools', { tab: 'torrent' }),
       scale: value => { if (win && !win.isDestroyed()) win.webContents.setZoomFactor(value); toolsWindows?.scale(value); },
@@ -92,6 +92,35 @@ if (!app.requestSingleInstanceLock({ version: app.getVersion() })) {
       wakeStatus: () => syncWake(),
       updateAvailable: async () => { if (!quitting && toolsWindows) await toolsWindows.open('updates'); },
       openUpdateRelease: async url => { await shell.openExternal(url); return true; },
+      applyUpdate: async ({ path: exePath, portable }) => {
+        if (typeof exePath !== 'string' || !path.isAbsolute(exePath) || !exePath.toLowerCase().endsWith('.exe')) throw Error('Invalid update path.');
+        const sysOs = require('node:os');
+        if (!exePath.startsWith(sysOs.tmpdir())) throw Error('Update file must be in the system temp directory.');
+        if (!fs.existsSync(exePath)) throw Error('Update file not found. Download the update again.');
+        if (fs.statSync(exePath).size < 512 * 1024) throw Error('Update file is incomplete. Download the update again.');
+        if (process.platform !== 'win32') throw Error('Direct update is only supported on Windows. Install manually from GitHub.');
+        if (portable) {
+          const currentExe = process.env.PORTABLE_EXECUTABLE_FILE || process.execPath;
+          const psPath = path.join(sysOs.tmpdir(), 'soubli-apply-update.ps1');
+          const q = s => JSON.stringify(String(s));
+          const ps = [
+            ' = Get-Process -Id ' + process.pid + ' -ErrorAction SilentlyContinue',
+            'if () { .WaitForExit(30000) }',
+            'Start-Sleep -Milliseconds 500',
+            'Copy-Item -LiteralPath ' + q(exePath) + ' -Destination ' + q(currentExe) + ' -Force',
+            'Start-Process -FilePath ' + q(currentExe),
+            'Remove-Item -LiteralPath ' + q(path.dirname(exePath)) + ' -Recurse -Force -ErrorAction SilentlyContinue'
+          ].join('\r\n');
+          fs.writeFileSync(psPath, ps, 'utf8');
+          const { spawn } = require('node:child_process');
+          spawn('powershell.exe', ['-NoProfile', '-WindowStyle', 'Hidden', '-ExecutionPolicy', 'Bypass', '-File', psPath], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+        } else {
+          const { spawn } = require('node:child_process');
+          spawn(exePath, ['/S'], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+        }
+        setTimeout(() => app.quit(), 1500);
+        return true;
+      },
       authorProfile: async () => { await shell.openExternal('https://www.facebook.com/wajdiiafroo0610'); return true; },
       quit: () => { app.quit(); return true; },
       browserExtensions: async (data = {}) => {

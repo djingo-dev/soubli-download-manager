@@ -57,3 +57,78 @@ test('malformed and oversized responses are not processed as updates', async () 
 test('shutdown aborts a pending check without writing to a closed store', async () => {
     let abort = false; const f = fixture({ fetch: (_url, { signal }) => new Promise((_resolve, reject) => signal.addEventListener('abort', () => { abort = true; reject(Error('aborted')); })) }); const pending = f.checker.check(); f.checker.stop(); await pending; assert.equal(abort, true); assert.equal(f.notifications.length, 0);
 });
+test('release info exposes validated direct download URLs', () => {
+    const data = release(); const info = releaseInfo(data);
+    assert.ok(info.setupUrl.startsWith(REPOSITORY_URL + '/releases/download/v2.6.0/'));
+    assert.ok(info.setupUrl.endsWith('soubli-2.6.0-Setup.exe'));
+    assert.equal(info.portableUrl, '');
+    const data2 = release(); data2.assets[0].name = 'soubli-2.6.0-Portable.exe'; data2.assets[0].browser_download_url = REPOSITORY_URL + '/releases/download/v2.6.0/soubli-2.6.0-Portable.exe'; const info2 = releaseInfo(data2); assert.equal(info2.setupUrl, ''); assert.ok(info2.portableUrl.endsWith('soubli-2.6.0-Portable.exe'));
+});
+test('snapshot exposes null download state when idle', () => {
+    const f = fixture(); assert.equal(f.checker.snapshot().download, null); f.checker.stop();
+});
+test('download sets downloading state immediately and resolves to ready', async () => {
+    const size = 1024 * 512; const buf = Buffer.alloc(size, 0x4d);
+    const f = fixture({ fetch: async (url) => { if (url.includes('api.github.com')) return Response.json(release()); assert.ok(url.includes('Setup.exe')); return new Response(buf, { status: 200, headers: { 'content-length': String(size) } }); } });
+    await f.checker.check();
+    const dlPromise = f.checker.download({ portable: false });
+    assert.equal(f.checker.downloadState?.status, 'downloading');
+    const snap = await dlPromise;
+    assert.equal(snap.download.status, 'ready');
+    assert.ok(snap.download.path, 'path should be set');
+    assert.ok(snap.download.path.endsWith('Setup.exe'));
+    assert.equal(snap.download.percent, 100);
+    assert.equal(snap.download.portable, false);
+    const fs = require('node:fs'); assert.ok(fs.existsSync(snap.download.path)); fs.unlinkSync(snap.download.path); try { fs.rmdirSync(require('node:path').dirname(snap.download.path)); } catch { }
+    f.checker.stop();
+});
+test('download picks portable asset when requested', async () => {
+    const buf = Buffer.alloc(512, 0x4d);
+    const f = fixture({ fetch: async (url) => { assert.ok(url.includes('Portable.exe')); return new Response(buf, { status: 200, headers: { 'content-length': String(buf.length) } }); } });
+    const data = release(); data.assets.push({ name: 'soubli-2.6.0-Portable.exe', state: 'uploaded', size: 512, browser_download_url: REPOSITORY_URL + '/releases/download/v2.6.0/soubli-2.6.0-Portable.exe' });
+    f.checker.fetch = async (url) => { if (url.includes('api.github.com')) return Response.json(data); assert.ok(url.includes('Portable.exe')); return new Response(buf, { status: 200, headers: { 'content-length': String(buf.length) } }); };
+    await f.checker.check();
+    const snap = await f.checker.download({ portable: true });
+    assert.equal(snap.download.status, 'ready'); assert.equal(snap.download.portable, true);
+    assert.ok(snap.download.path.endsWith('Portable.exe'));
+    const fs = require('node:fs'); if (snap.download.path && fs.existsSync(snap.download.path)) { fs.unlinkSync(snap.download.path); try { fs.rmdirSync(require('node:path').dirname(snap.download.path)); } catch { } }
+    f.checker.stop();
+});
+test('download fails with error state on non-ok HTTP response', async () => {
+    const f = fixture({ fetch: async (url) => url.includes('api.github.com') ? Response.json(release()) : new Response('', { status: 503 }) });
+    await f.checker.check(); const snap = await f.checker.download();
+    assert.equal(snap.download.status, 'error'); assert.equal(snap.download.error, 'download-failed'); f.checker.stop();
+});
+test('download rejects when no update is available', async () => {
+    const f = fixture({ fetch: async () => Response.json(release('2.5.3')) });
+    await f.checker.check(); await assert.rejects(() => f.checker.download(), /no-update/); f.checker.stop();
+});
+test('download rejects when already in progress', async () => {
+    let resolve; const buf = Buffer.alloc(256, 0x4d);
+    const f = fixture({ fetch: async (url) => url.includes('api.github.com') ? Response.json(release()) : new Promise(r => resolve = () => r(new Response(buf, { status: 200, headers: { 'content-length': '256' } }))) });
+    await f.checker.check();
+    const first = f.checker.download();
+    assert.equal(f.checker.downloadState?.status, 'downloading');
+    await assert.rejects(() => f.checker.download(), /already-downloading/);
+    resolve(); const snap = await first;
+    assert.equal(snap.download.status, 'ready');
+    const fs = require('node:fs'); if (snap.download.path && fs.existsSync(snap.download.path)) { fs.unlinkSync(snap.download.path); try { fs.rmdirSync(require('node:path').dirname(snap.download.path)); } catch { } }
+    f.checker.stop();
+});
+test('cancelDownload stops an in-progress download', async () => {
+    let aborted = false;
+    const f = fixture({ fetch: async (url, { signal }) => { if (url.includes('api.github.com')) return Response.json(release()); return new Promise((_, reject) => signal.addEventListener('abort', () => { aborted = true; reject(Object.assign(new Error('aborted'), { name: 'AbortError' })); })); } });
+    await f.checker.check();
+    const dlPromise = f.checker.download();
+    assert.equal(f.checker.downloadState?.status, 'downloading');
+    f.checker.cancelDownload();
+    assert.equal(f.checker.downloadState?.status, 'cancelled');
+    await dlPromise;
+    assert.equal(aborted, true);
+    f.checker.stop();
+});
+test('stop aborts an in-progress download and cleans up state', async () => {
+    const f = fixture({ fetch: async (url, { signal }) => { if (url.includes('api.github.com')) return Response.json(release()); return new Promise((_, reject) => signal.addEventListener('abort', () => reject(Object.assign(new Error('aborted'), { name: 'AbortError' })))); } });
+    await f.checker.check(); const dlPromise = f.checker.download(); f.checker.stop(); await dlPromise;
+    assert.equal(f.checker.downloadState?.status, 'error');
+});
