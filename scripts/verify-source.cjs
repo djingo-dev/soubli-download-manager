@@ -11,5 +11,5 @@ const metadata = JSON.parse(fs.readFileSync(path.join(root, 'vendor/yt-dlp.json'
 const digest = crypto.createHash('sha256').update(fs.readFileSync(path.join(root, 'vendor/yt-dlp.exe'))).digest('hex');
 const expected = metadata.sha256 || '33121d192d706e62f684a06f80918e3f3a8ba52ac3a65213b6951c39c7d9f555';
 if (digest !== expected) throw Error('Bundled extractor checksum mismatch');
-for (const file of ['native/SoubliNativeHost.exe', 'native/soubliNativeHost.cs', 'ui/appearance.js', 'ui/messages.js']) if (!fs.existsSync(path.join(root, file))) throw Error('Missing required source asset: ' + file);
+for (const file of ['native/SoubliNativeHost.exe', 'native/SoubliNativeHost.cs', 'ui/appearance.js', 'ui/messages.js']) if (!fs.existsSync(path.join(root, file))) throw Error('Missing required source asset: ' + file);
 console.log(JSON.stringify({ version: pkg.version, syntaxFiles: checked, extractorSHA256: digest, companionVersion: manifest.version }, null, 2));

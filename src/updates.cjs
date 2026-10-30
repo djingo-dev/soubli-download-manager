@@ -1,4 +1,4 @@
-const REPOSITORY = 'Djingo-dev/soubli-download-manager';
+const REPOSITORY = 'djingo-dev/soubli-download-manager';
 const REPOSITORY_URL = 'https://github.com/' + REPOSITORY;
 const RELEASE_API = 'https://api.github.com/repos/' + REPOSITORY + '/releases/latest';
 const DAY = 24 * 60 * 60 * 1000;
