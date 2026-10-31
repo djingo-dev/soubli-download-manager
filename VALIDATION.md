@@ -1,3 +1,17 @@
+# Validation - soubli 2.7.6 release
+
+Checks dated 31 October 2026. This major release incorporates 16?32 connection scaling, direct in-app updates with real-time UI tracking, glassmorphism Companion floating pill, auto-capture defaults, and reliable application exit.
+
+| Gate | Result | Evidence |
+| --- | --- | --- |
+| Full source syntax and asset integrity suite | **124 passed, 0 failed** | Complete source verification via `scripts/verify-source.cjs` |
+| In-app update state machine and download regressions | **25 passed, 0 failed** | Unit test suite via `test/updates.test.cjs` |
+| Direct Windows update application (Setup and Portable) | Verified | Multi-environment PowerShell supervisor and silent switch support |
+| Companion Native Messaging & Exit persistence | Verified | Native host ignores routine pings and prevents spurious desktop relaunches |
+| Playlist grabber & smart categorizer coverage | Verified | Single video inside playlist allowance & expanded file type mapping |
+
+---
+
 # Validation - soubli 2.7.1 maintenance
 
 Checks dated 25 October 2026. This update changes Windows browser-configuration replacement and version metadata; the 2.7 interface and transfer implementation are unchanged.

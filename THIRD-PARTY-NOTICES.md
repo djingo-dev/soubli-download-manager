@@ -1,6 +1,6 @@
 # Third-party components
 
-soubli is an independent implementation. It does not include or link to Tonec IDM binaries or branding.
+soubli is an independent implementation developed by Wajdii Afroo (https://www.facebook.com/wajdiiafroo0610). It does not include or link to Tonec IDM binaries or branding.
 
 Dependencies retain their original licenses in node_modules and in the packaged application:
 

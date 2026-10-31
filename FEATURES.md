@@ -53,9 +53,9 @@ English default, Arabic RTL, System/Light/Dark, 80–150% scaling, separate nati
 
 See [limitations](docs/LIMITATIONS.md) and [validation](VALIDATION.md) for exact scope.
 
-## Release notifications
+## In-app updates and release management
 
-GitHub Release checks after startup and every six hours while running, independent native update popup, version/notes, trusted release-page download button, manual Help check, 24-hour reminder, skip version and automatic-check preference. [Details](docs/UPDATES.md).
+GitHub Release checks after startup and every six hours while running, independent native update popup, version/notes, trusted direct in-app download and installation (Setup and Portable editions) with real-time progress bar, manual Help check, 24-hour reminder, skip version and automatic-check preference. [Details](docs/UPDATES.md).
 
 ## Calm interface and background operation (2.5.4)
 
@@ -70,4 +70,4 @@ GitHub Release checks after startup and every six hours while running, independe
 
 One Tools button and Ctrl+K find torrents/magnets, phone control over trusted local Wi-Fi, verified mirrors, selected ZIP files, completed-file move/rename, SHA-512, duplicate-task cleanup and personalization. See [the simple guide](docs/TOOLS.md). Technical controls stay collapsed; queue yielding and history cleanup are off by default. Queue shutdown includes a cancellable one-minute countdown and runs only after success with other work idle.
 
-Linux packaging is deferred; 2.6.0 ships Windows editions only. [Every reviewed FDM proposal](docs/FDM-FEATURE-AUDIT.md) has a status and a boundary.
+Soubli 2.7.6 ships complete Windows x64 editions (Setup and Portable) with in-app updater. [Every reviewed FDM proposal](docs/FDM-FEATURE-AUDIT.md) has a status and a boundary.

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.7.6
+
+- Boosted parallel connection throughput: set default HTTP/HTTPS connections to 16 threads (supporting up to 32 connections) and increased concurrent video fragment streams to 8 for maximum network saturation.
+- Direct in-app update engine: download and apply new releases (Setup and Portable) directly inside the desktop interface with real-time progress indicators, background PowerShell-driven zero-friction restart, and complete offline rollback safety.
+- Redesigned floating video grabber in Companion extension: modern glassmorphism pill with backdrop blur, subtle glow, fast quality selector menu, and smoother dragging.
+- Enabled automatic file capture by default in Companion extension across Chrome, Microsoft Edge, Brave, and Chromium for instant file handoffs (ZIP, RAR, 7Z, EXE, ISO, PDF, etc.).
+- Fixed unexpected relaunch on application exit: restricted Native Messaging host re-spawning to genuine incoming transfer requests while ignoring routine background pings when Soubli is closed.
+- Single-click playlist and channel grabber: streamlined playlist detection, relaxed constraints for single videos inside playlists, and added automatic sequential numbering and folder grouping.
+- Smart Speed Limiter toggle: instant gaming and browsing bandwidth limiter button on the main footer status bar to eliminate ping spikes.
+- Expanded smart auto-categorization rules supporting all modern archives, media, documents, and executable package formats.
+- Refined Add Download dialog: resolved folder-select dropdown clipping, styled size and resumability summary badge, and auto-focused Start Download for instant Enter-key triggers.
+
 ## 2.7.1
 
 - Fix replacement of an existing encrypted browser-bridge configuration on Windows PowerShell during upgrades and reconnects. Preserve atomic writes and protected tokens instead of treating a missing backup path as an empty filename.

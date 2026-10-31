@@ -5,10 +5,10 @@
 1. Open soubli and choose **Browser** in the toolbar.
 2. Select **Set up browser integration**. This prepares the extension and registers the host for your Windows user.
 3. Choose **Open extension folder** and keep its path.
-4. In Chrome open `chrome://extensions`; in Edge use `edge://extensions`.
+4. In Chrome open `chrome://extensions`; in Edge use `edge://extensions`; in Brave use `brave://extensions`.
 5. Enable **Developer mode**, choose **Load unpacked** and select the prepared `soubli-Companion` folder.
 6. Open the extension popup and choose **Test connection**.
-7. Enable automatic capture if desired. It is optional.
+7. Automatic capture is enabled by default to intercept common files (ZIP, RAR, EXE, PDF, etc.). You can customize or disable it in the popup.
 
 This is a locally loaded extension, not a Chrome Web Store listing. Keep the manifest key unchanged: it determines the ID authorized by the native host. Windows native registration supports Chrome, Edge, Brave and Chromium.
 
