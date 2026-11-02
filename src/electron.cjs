@@ -47,7 +47,7 @@ function parseCLI(args) { const result = {}; for (let i = 0; i < args.length; i+
 async function cli(args) {
   const a = parseCLI(args); if (a['/d']) {
     const d = await service.action('add', { url: a['/d'], directory: a['/p'], name: a['/f'], later: !!a['/a'] });
-    if (a['/q']) service.engine.on('complete', item => { if (service.store.settings.completionDialog && toolsWindows) toolsWindows.open('complete', { id: item.id }).catch(writeLog); if (item.id === d.id) app.quit(); });
+    if (a['/q']) service.engine.on('complete', item => { if (toolsWindows) { toolsWindows.close('details', { id: item.id }); if (service.store.settings.completionDialog) toolsWindows.open('complete', { id: item.id }).catch(writeLog); } if (item.id === d.id) app.quit(); });
     if (a['/h']) service.store.log('notice', '/h غير متاح: لا يتم قطع اتصال النظام تلقائياً');
   } if (a['/s']) await service.action('queue', { id: 'main', running: true });
 }
@@ -216,7 +216,7 @@ if (!app.requestSingleInstanceLock({ version: app.getVersion() })) {
       const result = await service.action(type, data); if (type === 'settings' && data.language) syncNativeLanguage(); return result;
     });
     ipcMain.handle('soubli:state', event => { if (quitting) return { error: 'البرنامج يغلق' }; if (!trusted(event)) throw Error('مصدر غير موثوق'); const owner = BrowserWindow.fromWebContents(event.sender); return { ...service.snapshot(), windowVisible: !!owner && owner.isVisible() && !owner.isMinimized() }; });
-    service.engine.on('complete', item => { if (service.store.settings.completionDialog && toolsWindows) toolsWindows.open('complete', { id: item.id }).catch(writeLog); safeSend(win, 'soubli:complete', { id: item.id, name: item.name }); playEventSound('complete'); try { if (Notification.isSupported()) new Notification({ title: tr('اكتمل التحميل', 'Download complete'), body: item.name }).show(); } catch (error) { writeLog(error); } });
+    service.engine.on('complete', item => { if (toolsWindows) { toolsWindows.close('details', { id: item.id }); if (service.store.settings.completionDialog) toolsWindows.open('complete', { id: item.id }).catch(writeLog); } safeSend(win, 'soubli:complete', { id: item.id, name: item.name }); playEventSound('complete'); try { if (Notification.isSupported()) new Notification({ title: tr('اكتمل التحميل', 'Download complete'), body: item.name }).show(); } catch (error) { writeLog(error); } });
     service.engine.on('failure', () => { playEventSound('error'); });
     service.engine.on('queueComplete', () => { playEventSound('queue'); });
     service.engine.on('quitRequested', () => app.quit());

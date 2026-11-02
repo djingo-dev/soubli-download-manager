@@ -33,6 +33,11 @@ class ToolWindows {
     try { await window.loadURL(url.href); window.webContents.setZoomFactor(Math.max(.8, Math.min(1.5, this.service.store.settings.textScale / 100))); this.present(window, ['download-info', 'details', 'complete', 'updates'].includes(kind)); } catch (error) { window.destroy(); throw error; }
     return { key, id: window.id, reused: false };
   }
+  close(kind, data = {}) {
+    const key = kind + (['details', 'download-info', 'complete'].includes(kind) ? ':' + data.id : '');
+    const window = this.windows.get(key);
+    if (window && !window.isDestroyed()) window.close();
+  }
   scale(value) { for (const w of this.windows.values()) if (!w.isDestroyed()) w.webContents.setZoomFactor(value); }
   closeAll() { this.closing = true; for (const w of this.windows.values()) if (!w.isDestroyed()) w.destroy(); this.windows.clear(); }
 }

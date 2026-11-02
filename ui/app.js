@@ -41,7 +41,10 @@ async function refreshOnce() {
       if (view === 'grabber' && !$('#dialog').open) renderProjects();
       for (const d of state.downloads.filter(d => d.status === 'complete' && !previousComplete.has(d.id))) {
         previousComplete.add(d.id); if (!windowContext) toast(t('اكتمل التحميل: ', 'Download complete: ') + d.name);
-        if (!state.desktop && !windowContext && state.settings.completionDialog && !$('#dialog').open) { if (!nativeTool('complete', { id: d.id })) showComplete(d.id); }
+        if (!state.desktop && !windowContext && state.settings.completionDialog) {
+          if (detailId === d.id && $('#dialog').open) closeModal();
+          if (!$('#dialog').open && !nativeTool('complete', { id: d.id })) showComplete(d.id);
+        }
         if (!state.desktop && state.settings.sounds) beep();
       }
       if (detailId && $('#dialog').open) updateDetail();
