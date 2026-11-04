@@ -1,6 +1,10 @@
 # Feature guide
 
-## Workspace controls in 2.7
+## Workspace controls in 2.7.8
+
+- Quick-rescue expired links from right-click context menu with cryptographic segment validation.
+- Dynamic folder and extension auto-sync between video qualities and audio extraction.
+- Enhanced frosted-glass companion floating video grabber.
 
 - Pin and reorder up to eight tools on the main toolbar.
 - Set simultaneous files (1–16) and HTTP connections per file (1–32) with a simple two-field form. Extra tasks wait with resumable bytes retained; torrent peer settings remain separate.

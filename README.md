@@ -20,9 +20,9 @@ Browser capture, playlists, torrents, queues and useful file tools — in one cu
 
 | Edition | Install | Run without installing | Download size |
 | :--- | :--- | :--- | :--- |
-| **Complete** · retained compatibility choice | [Windows setup](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-2.7.1-Setup.exe) | [Portable](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.1/soubli-2.7.1-Portable.exe) | 140.37 / 140.17 MB |
+| **Complete** · retained compatibility choice | [Windows setup](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.8/soubli-2.7.8-Setup.exe) | [Portable](https://github.com/djingo-dev/soubli-download-manager/releases/download/v2.7.8/soubli-2.7.8-Portable.exe) | 140.37 / 140.17 MB |
 
-[All release files](https://github.com/djingo-dev/soubli-download-manager/releases/tag/v2.7.1)
+[All release files](https://github.com/djingo-dev/soubli-download-manager/releases/tag/v2.7.8)
 
 Compact Preview keeps the same interface, complete official Node runtime, full FFmpeg, aria2 and video-extraction tools. It uses **shared Microsoft WebView2 and .NET Framework 4.8**, which are not part of the reported download size. It is an optional preview, with [its own compatibility and validation notes](docs/COMPACT-WINDOWS-PREVIEW.md). The complete edition remains available.
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.7.8
+
+- **Instant Expired-Link Rescue (Right-Click Context Menu):** Direct "Refresh link… / تحديث الرابط…" action added to the task context menu and error cards. Allows pasting fresh temporary URLs (Google Drive, 1Fichier, Mediafire, CDN tokens) with automatic clipboard detection, deep segment byte-verification, and zero-data-loss resume.
+- **Smart Category & Folder Auto-Sync:** Dynamic Save-to folder switching based on video quality selection (e.g. selecting "Audio only MP3" immediately routes files to Music/Audio folder and switches the target extension from `.mp4` to `.mp3` without manual renames).
+- **Seamless Browser Download Handoff & Auto-Launch:** Resolved browser companion native messaging timing. If Soubli is closed or minimized to tray, initiating downloads directly starts the background daemon and enqueues tasks seamlessly without blocking on ping failures.
+- **Ultra-Modern Floating Video Bar (Companion Extension):** Redesigned with Anthropic frontend-design guidelines featuring frosted glassmorphism (`backdrop-filter: blur(20px)`), glowing micro-interactions, full-width pill curvature, and single-click access to all audio/video stream variants.
+- **Integrated Anthropic Agent Skills Ecosystem:** Embedded `.agents/skills/` framework supporting frontend-design, automated webapp-testing, MCP servers, and comprehensive document generation pipelines.
+
 ## 2.7.6
 
 - Boosted parallel connection throughput: set default HTTP/HTTPS connections to 16 threads (supporting up to 32 connections) and increased concurrent video fragment streams to 8 for maximum network saturation.
