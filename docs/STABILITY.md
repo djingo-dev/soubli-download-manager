@@ -36,4 +36,4 @@ Three original short PCM WAV sounds ship with the app. Empty sound fields select
 
 Transfer windows expose Cancel with an inline confirmation. Confirming stops the task, removes its temporary parts and closes that transfer window; completed disk files remain. Pause retains partial data. Normal removal from the main library retains its recovery-bin behavior.
 
-Clicking the tray icon restores the last transfer explicitly minimized or sent there. Open soubli in the tray context menu always opens the main library.
+Clicking the tray icon restores the last transfer explicitly minimized or sent there. Open Soubli in the tray context menu always opens the main library.

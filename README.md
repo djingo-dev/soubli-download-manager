@@ -103,7 +103,7 @@ Use **Exit soubli** when you intentionally want to stop the service. Closing or 
 
 ## Get started
 
-1. Download an edition above and open soubli.
+1. Download an edition above and Open Soubli.
 2. Paste a link with **New download**. Choose a destination and start now or queue it for later.
 3. For browser capture, open **Browser integration**, prepare the native connection and enable the companion once. Chrome, Edge and Brave use the same companion. [Walkthrough →](BROWSER-INTEGRATION.md)
 4. Pin your usual tools and choose **Download limits** if you want fewer simultaneous transfers.

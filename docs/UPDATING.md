@@ -10,7 +10,7 @@ official download page.
 3. Run it. When an existing installation is detected, choose **Repair / update**.
    The installer keeps its location and installation scope. A machine-wide
    installation can require Windows administrator approval.
-4. Open soubli and check the version in **About**. Your library, settings and
+4. Open Soubli and check the version in **About**. Your library, settings and
    completed files are retained. The installer does not need you to uninstall
    soubli first.
 

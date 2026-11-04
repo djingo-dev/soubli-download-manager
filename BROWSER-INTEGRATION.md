@@ -2,7 +2,7 @@
 
 ## One-time setup
 
-1. Open soubli and choose **Browser** in the toolbar.
+1. Open Soubli and choose **Browser** in the toolbar.
 2. Select **Set up browser integration**. This prepares the extension and registers the host for your Windows user.
 3. Choose **Open extension folder** and keep its path.
 4. In Chrome open `chrome://extensions`; in Edge use `edge://extensions`; in Brave use `brave://extensions`.
