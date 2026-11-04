@@ -61,6 +61,29 @@ function showVideoQualities(info) {
   $('#video-qualities').innerHTML = select('quality', t('جودة الفيديو', 'Video quality'), values, 'best');
   const name = $('#add-form [name=name]'), pending = state.downloads.find(d => d.id === windowArgs.get('id')); if (name && (!name.value || pending && JSON.parse(pending.meta).autoName && name.value === pending.name)) name.value = info.title + '.mp4';
   $('#add-form [name=category]').value = 'video'; $('#add-form [name=mode]').value = 'site';
+  // مزامنة مجلد الحفظ واسم الملف تلقائيًا عند تغيير جودة الفيديو (فيديو ↔ صوت)
+  // Sync Save-to folder and file extension automatically when the quality selection changes (video ↔ audio)
+  $('#f-quality').addEventListener('change', function () {
+    const isAudio = this.value === 'audio';
+    const cat = isAudio ? 'music' : 'video';
+    $('#add-form [name=category]').value = cat;
+
+    // تحديث الامتداد في اسم الملف تلقائياً إذا كان موجوداً
+    const nameField = $('#add-form [name=name]');
+    if (nameField && nameField.value) {
+      if (isAudio && nameField.value.endsWith('.mp4')) {
+        nameField.value = nameField.value.replace(/\.mp4$/i, '.mp3');
+      } else if (!isAudio && nameField.value.endsWith('.mp3')) {
+        nameField.value = nameField.value.replace(/\.mp3$/i, '.mp4');
+      }
+    }
+
+    if ($('#add-form').dataset.directoryEdited) return; // المستخدم غيّر المجلد يدويًا → لا تتدخل
+    const folders = state.settings.categoryFolders || {};
+    const dir = folders[cat] || state.settings.downloadDir || '';
+    const dirField = $('#add-form [name=directory]');
+    if (dirField) dirField.value = dir;
+  });
   $('#probe-result').innerHTML = `<div class="info-box"><strong>${h(info.title)}</strong><br>${duration(info.duration)} · ${info.formats.length} ${t('صيغة متاحة', 'available formats')} · ${h(info.extractor)}</div>`;
 }
 init();

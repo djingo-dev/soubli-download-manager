@@ -49,54 +49,61 @@
     const bar = document.createElement('div'); bar.className = 'bar'; bar.dir = 'ltr'; shadow.append(bar);
     const make = (label, title, cls, fn) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.title = title; b.setAttribute('aria-label', title); b.className = cls; if (fn) b.onclick = fn; bar.append(b); return b; };
     const main = make('', 'Download video · drag to move', 'main grip', e => { if (main.dataset.dragged === '1') { delete main.dataset.dragged; return; } showMediaMenu(e); });
-    main.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 15v5h14v-5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="label">Download</span>';
+    main.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="label">Download Video</span>';
     const grip = main;
     make('⋯', 'Video button options', 'control options', showPanelOptions);
     main.oncontextmenu = e => { e.preventDefault(); showPanelOptions(); };
     const cleanStyle = document.createElement('style'); cleanStyle.textContent = `
 .bar {
-  background: rgba(15, 23, 42, 0.85);
-  color: #f8fafc;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 30px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  padding: 4px 6px;
-  gap: 3px;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  background: rgba(13, 20, 36, 0.88);
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 3px 6px;
+  gap: 4px;
+  user-select: none;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background 0.2s ease;
 }
 .bar:hover {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
-  transform: translateY(-1px);
+  background: rgba(15, 23, 42, 0.94);
+  box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px) scale(1.02);
 }
 .bar button {
   min-height: 28px;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .bar .main {
   display: flex;
   gap: 8px;
   align-items: center;
-  font: 600 12px/1.2 'Segoe UI', system-ui, sans-serif;
-  padding: 5px 12px 5px 8px;
+  font: 600 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 5px 12px 5px 10px;
   cursor: pointer;
-  border-radius: 20px;
+  border-radius: 9999px;
   touch-action: none;
-  color: #f1f5f9;
+  color: #ffffff;
+  letter-spacing: 0.2px;
 }
 .bar .main svg {
   color: #38bdf8;
-  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.6));
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7));
+  transition: transform 0.2s ease;
+}
+.bar:hover .main svg {
+  transform: translateY(1px);
 }
 .main:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
 }
 .bar .control {
   width: 26px;
   min-height: 28px;
   padding: 0;
-  font: 700 16px/1 'Segoe UI', sans-serif;
+  font: 700 14px/1 system-ui, sans-serif;
   color: #94a3b8;
   border-radius: 50%;
   display: flex;
@@ -104,57 +111,62 @@
   justify-content: center;
 }
 .bar .control:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.16);
   color: #f8fafc;
 }
 .menu {
-  background: rgba(15, 23, 42, 0.94);
+  background: rgba(15, 23, 42, 0.96);
   color: #f8fafc;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   padding: 6px;
   font-size: 12px;
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  animation: soubliMenuFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: system-ui, -apple-system, sans-serif;
+  animation: soubliMenuFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes soubliMenuFadeIn {
-  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .menu button {
-  padding: 9px 12px;
-  border-radius: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
   border: none;
   color: #e2e8f0;
   font-weight: 500;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  text-align: left;
+  transition: all 0.15s ease;
 }
 .menu button:hover {
-  background: rgba(56, 189, 248, 0.15);
+  background: rgba(56, 189, 248, 0.2);
   color: #38bdf8;
+  transform: translateX(2px);
 }
 .menu .menu-close {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
   color: #94a3b8;
   font-weight: 600;
   margin-bottom: 4px;
 }
 .menu .menu-close:hover {
-  background: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.25);
   color: #f87171;
 }
 .menu small {
   color: #94a3b8;
-  font-size: 10px;
+  font-size: 11px;
 }
 .note {
   padding: 8px 12px;
   color: #94a3b8;
+  font-size: 11px;
+  line-height: 1.5;
 }
 `; shadow.append(cleanStyle);
     let drag;
@@ -199,7 +211,7 @@
       const r = await chrome.runtime.sendMessage({ type: 'media' }); if (request !== menuRequest || lifecycle.signal.aborted) return; if (r.error) throw Error(r.error); lastMedia = r.result.media || [];
       const page = currentVideoPage(), direct = [...mediaElements('video')].map(v => v.currentSrc).filter(u => /^https?:/.test(u)).map(url => ({ url, type: 'media', name: '' }));
       const sources = soubliMediaModel.select([...lastMedia, ...direct]);
-      if (page) { append('? Download Video / Audio (All Qualities)', async b => { b.disabled = true; const result = await chrome.runtime.sendMessage({ type: 'download', url: page, mode: 'site', name: document.title }); if (result.error) throw Error(result.error); notify('Choose video quality in the soubli desktop confirmation window.'); closeMediaMenu(); }); }
+      if (page) { append('🎬 Download Video / Audio (All Qualities)', async b => { b.disabled = true; const result = await chrome.runtime.sendMessage({ type: 'download', url: page, mode: 'site', name: document.title }); if (result.error) throw Error(result.error); notify('Choose video quality in the soubli desktop confirmation window.'); closeMediaMenu(); }); }
       else for (const item of sources) { const b = append(item.label, async b => { b.disabled = true; const result = await chrome.runtime.sendMessage({ type: 'download', url: item.url, name: item.fileName, mode: item.mode }); if (result.error) throw Error(result.error); notify('Check the download confirmation window in soubli.'); closeMediaMenu(); }); b.title = item.kind === 'stream' ? 'Full stream — soubli assembles segments automatically' : item.kind === 'audio' ? 'Direct audio source' : 'Direct video source — audio may be separate'; const small = document.createElement('small'); small.textContent = b.title; b.append(small); }
       if (!sources.length && !page && visibleVideo() && !encryptedVideos.has(visibleVideo())) append('Try extracting this video page', async b => { b.disabled = true; const result = await chrome.runtime.sendMessage({ type: 'download', url: location.href, name: document.title || 'Video', mode: 'site' }); if (result.error) throw Error(result.error); closeMediaMenu(); });
       if (encryptedVideos.has(visibleVideo())) { const note = document.createElement('div'); note.className = 'note'; note.textContent = 'This player uses protected media. soubli cannot download protected streams.'; menu.append(note); }

@@ -140,9 +140,59 @@ window.addEventListener('unhandledrejection', event => { event.preventDefault();
 window.addEventListener('error', event => { if (event.error) { event.preventDefault(); unexpectedError(event.error); } });
 let audioCtx; function beep() { try { audioCtx ||= new AudioContext(); const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.setValueAtTime(660, audioCtx.currentTime); osc.frequency.setValueAtTime(880, audioCtx.currentTime + .12); gain.gain.setValueAtTime(.06, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + .35); osc.start(); osc.stop(audioCtx.currentTime + .35); } catch { } }
 async function downloadJSON(data, prefix = 'soubli-backup') { const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = prefix + '-' + new Date().toISOString().slice(0, 10) + '.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 5000); }
+function openRefreshLink(id) {
+  const d = state.downloads.find(item => item.id === id);
+  if (!d) return;
+  const pct = percent(d).toFixed(1);
+  const sz = d.size ? size(d.size) : t('حجم غير معروف', 'Unknown size');
+  const downloadedSz = size(d.downloaded);
+  const meta = JSON.parse(d.meta || '{}');
+
+  modal(t('تحديث رابط التحميل', 'Refresh download link'), `<div class="modal-body">
+    <div class="info-box">
+      <strong>${h(d.name)}</strong><br>
+      ${t('المحفوظ:', 'Saved:')} ${downloadedSz} / ${sz} (${pct}%)<br>
+      <small dir="ltr" style="opacity:0.8">${h(d.url)}</small>
+    </div>
+    <form id="refresh-link-form">
+      <div id="form-error" class="form-error"></div>
+      ${field('newUrl', t('رابط التحميل الجديد لنفس الملف', 'New download URL for the same file'), '', 'url', t('الصق الرابط الجديد هنا. سيتم فحص تطابق الحجم والأجزاء قبل التحديث واستئناف التحميل.', 'Paste fresh URL here. Size and parts will be verified before resuming.'), 'required dir="ltr" placeholder="https://..."')}
+    </form>
+  </div>`, `${button('close', t('إلغاء', 'Cancel'), null)}${button('submitRefreshLink', t('تحديث واستئناف', 'Update & resume'), 'link', 'primary', 'data-id="' + id + '"')}`);
+
+  // محاولة قراءة الحافظة تلقائياً واقتراح الرابط إذا كان رابط صالح
+  if (navigator.clipboard?.readText) {
+    navigator.clipboard.readText().then(text => {
+      text = text?.trim();
+      if (/^https?:\/\//i.test(text) && text !== d.url) {
+        const inp = $('#f-newUrl');
+        if (inp && !inp.value) inp.value = text;
+      }
+    }).catch(() => {});
+  }
+}
+
 async function handleAction(name, el) {
   const id = el.dataset.id;
   switch (name) {
+    case 'submitRefreshLink': {
+      const form = $('#refresh-link-form');
+      if (!form.reportValidity()) break;
+      const newUrl = $('#f-newUrl').value.trim();
+      if (!newUrl) break;
+      el.disabled = true;
+      try {
+        await api('rescueLink', { id, url: newUrl, headers: {} });
+        closeModal();
+        await api('start', { id });
+        await refresh();
+        toast(t('تم تحديث الرابط واستئناف التحميل بنجاح ✓', 'Link updated and download resumed successfully ✓'));
+      } catch (err) {
+        el.disabled = false;
+        formError(err);
+      }
+      break;
+    }
     case 'close': if ($('[name="hideComplete"]')?.checked) await action('settings', { completionDialog: false }); closeModal(); break;
     case 'retry': await refresh(); break;
     case 'add': openAdd(); break; case 'addNow': await submitAdd(false); break; case 'addLater': await submitAdd(true); break;

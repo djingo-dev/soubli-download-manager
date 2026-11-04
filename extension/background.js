@@ -26,7 +26,17 @@ async function downloadHeaders(url, sourcePage) {
   headers['user-agent'] ||= navigator.userAgent; return { headers, method: info.method };
 }
 async function sendDownload(data) {
-  const desktop = await transport({ type: 'ping' }); requireCurrentDesktop(desktop);
+  // نتحقق من إصدار البرنامج إذا كان شغّال، لكن إذا كان مغلقًا نكمل — SoubliNativeHost.exe سيفتحه تلقائيًا
+  // If the app is offline we continue; SoubliNativeHost.exe will auto-launch it via the 'download' message below
+  try {
+    const desktop = await transport({ type: 'ping' });
+    requireCurrentDesktop(desktop); // يوقف فقط إذا كانت نسخة قديمة incompatible
+  } catch (e) {
+    // إذا البرنامج مغلق: نكمل ونترك رسالة download تفتحه تلقائيًا
+    // If error is a version mismatch (old app responded), block the download
+    if (e.message && e.message.includes('is still running')) throw e;
+    // Otherwise (app offline / ECONNREFUSED / native error) → proceed to auto-launch
+  }
   const url = new URL(data.url); if (!['http:', 'https:'].includes(url.protocol)) throw Error('Only direct HTTP/HTTPS files can be transferred.');
   const { headers, method } = await downloadHeaders(url.href, data.sourcePage); if (method && method !== 'GET') throw Error('POST downloads must stay in the browser.');
   const out = await transport({ type: 'download', requestId: data.requestId || crypto.randomUUID(), ...data, headers, mode: data.mode || (/\.(m3u8|mpd)(\?|$)/i.test(url.href) ? 'media' : 'file') });

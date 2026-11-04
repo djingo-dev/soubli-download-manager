@@ -130,6 +130,7 @@ handleAction = async function (name, el) {
     case 'quit': return action('quit'); case 'drop': return action('drop');
     case 'mainQueueStart': return action('queue', { id: 'main', running: true }); case 'mainQueueStop': return action('queueStop', { id: 'main' });
     case 'selectedProperties': if (id) { const d = state.downloads.find(d => d.id === id); if (d?.status === 'pending') nativeTool('download-info', { id }); else openDetail(id); } return;
+    case 'refreshLink': if (id) openRefreshLink(id); return;
     case 'selectedOpen': case 'selectedFolder': if (id) await action(name === 'selectedOpen' ? 'open' : 'folder', { id }); return;
     case 'browserInstall': { const r = await action('browserInstall'); if (r) { await refresh(); renderIntegration(); toast(t('تم تجهيز الجسر. حمّل الإضافة في كروم مرة واحدة.', 'Bridge ready. Load the extension in Chrome once.')); } return; }
     case 'browserFolder': return action('browserFolder'); case 'browserExtensions': return action('browserExtensions');
@@ -168,7 +169,11 @@ handleAction = async function (name, el) {
 document.addEventListener('dblclick', e => { const row = e.target.closest('.download-row'); if (row) openDetail(row.dataset.id); });
 document.addEventListener('contextmenu', e => {
   const row = e.target.closest('.download-row'); if (!row) return; e.preventDefault(); selected = new Set([row.dataset.id]); updateDownloads(); $('#context-menu')?.remove();
-  const menu = document.createElement('div'); menu.id = 'context-menu'; menu.className = 'menu-popup context-popup'; menu.innerHTML = [['selectedProperties', t('خصائص / تفاصيل', 'Properties / details')], ['libraryRename', t('تسمية دفعة…', 'Batch rename…')], ['libraryTags', t('وسوم الملفات…', 'File tags…')], ['selectedStart', t('استئناف', 'Resume')], ['selectedPause', t('إيقاف', 'Stop')], ['selectedOpen', t('فتح الملف', 'Open file')], ['selectedFolder', t('فتح المجلد', 'Open folder')], ['selectedQueue', t('نقل إلى قائمة', 'Move to queue')], ['priorityHigh', t('أولوية عالية', 'High priority')], ['priorityNormal', t('أولوية عادية', 'Normal priority')], ['priorityLow', t('أولوية منخفضة', 'Low priority')], ['selectedDelete', t('حذف…', 'Delete…')]].map(([a, n]) => `<button data-action="${a}">${n}</button>`).join(''); menu.style.left = Math.min(e.clientX, innerWidth - 235) + 'px'; menu.style.top = Math.min(e.clientY, innerHeight - 250) + 'px'; document.body.append(menu); menu.style.maxHeight = 'calc(100vh - 16px)'; menu.style.overflowY = 'auto'; menu.style.top = Math.max(8, Math.min(e.clientY, innerHeight - menu.getBoundingClientRect().height - 8)) + 'px';
+  const d = state.downloads.find(item => item.id === row.dataset.id);
+  const items = [['selectedProperties', t('خصائص / تفاصيل', 'Properties / details')]];
+  if (d && d.status !== 'complete') items.push(['refreshLink', t('تحديث الرابط…', 'Refresh link…')]);
+  items.push(['libraryRename', t('تسمية دفعة…', 'Batch rename…')], ['libraryTags', t('وسوم الملفات…', 'File tags…')], ['selectedStart', t('استئناف', 'Resume')], ['selectedPause', t('إيقاف', 'Stop')], ['selectedOpen', t('فتح الملف', 'Open file')], ['selectedFolder', t('فتح المجلد', 'Open folder')], ['selectedQueue', t('نقل إلى قائمة', 'Move to queue')], ['priorityHigh', t('أولوية عالية', 'High priority')], ['priorityNormal', t('أولوية عادية', 'Normal priority')], ['priorityLow', t('أولوية منخفضة', 'Low priority')], ['selectedDelete', t('حذف…', 'Delete…')]);
+  const menu = document.createElement('div'); menu.id = 'context-menu'; menu.className = 'menu-popup context-popup'; menu.innerHTML = items.map(([a, n]) => `<button data-action="${a}">${n}</button>`).join(''); menu.style.left = Math.min(e.clientX, innerWidth - 235) + 'px'; menu.style.top = Math.min(e.clientY, innerHeight - 250) + 'px'; document.body.append(menu); menu.style.maxHeight = 'calc(100vh - 16px)'; menu.style.overflowY = 'auto'; menu.style.top = Math.max(8, Math.min(e.clientY, innerHeight - menu.getBoundingClientRect().height - 8)) + 'px';
 });
 function closeDesktopMenus(except) {
   for (const menu of document.querySelectorAll('.desktop-menu[open]')) if (menu !== except) menu.open = false;
