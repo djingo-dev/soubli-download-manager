@@ -9,6 +9,10 @@ const { Service } = require('./service.cjs');
 const { StartupManager, WindowRecovery, rotatingLog, safeSend } = require('./lifecycle.cjs');
 // soubli uses a 2D interface. Prefer software rendering for idle/driver compatibility.
 if (!process.argv.includes('--soubli-hardware-acceleration')) app.disableHardwareAcceleration();
+// تحسين استهلاك الذاكرة والمعالج في الخلفية وعلى الأجهزة الضعيفة (Low-spec & Battery optimization)
+app.commandLine.appendSwitch('disable-renderer-backgrounding');
+app.commandLine.appendSwitch('js-flags', '--expose-gc');
+
 const { BrowserBridge } = require('./browser.cjs');
 const { ToolWindows } = require('./windows.cjs');
 const { createServer } = require('./server.cjs');
@@ -16,6 +20,15 @@ const { validateURL } = require('./network.cjs');
 function writeLog(error) { try { const folder = process.env.soubli_SMOKE_DIR || app.getPath('userData'); rotatingLog(path.join(folder, 'desktop.log'), require('../ui/error-model.js').redact(error?.stack || String(error))); } catch { } }
 console.error = (...args) => writeLog(args.map(v => v?.stack || String(v)).join(' '));
 console.log = (...args) => { if (process.env.soubli_SMOKE_TEST) writeLog(args.join(' ')); };
+function trimMemory() {
+  try {
+    if (global.gc) global.gc();
+    if (process.platform === 'win32' && win && !win.isDestroyed()) {
+      // إشارة للمحرك لتقليص الـ Working set
+      win.webContents.invalidate();
+    }
+  } catch {}
+}
 let win, service, web, quitting = false, clipTimer, drop, tray, toolsWindows, wakeTimer, wakeId, mainPromise, startup, trayTimer, completionPower, releaseProfile;
 const pendingCLI = []; let trayTarget = null;
 function rememberTrayWindow(window) { if (!window || window.isDestroyed()) return; trayTarget = window.soubliDownloadId ? { kind: window.soubliKind, id: window.soubliDownloadId } : null; }
@@ -65,8 +78,8 @@ async function createWindow(background = process.argv.includes('--background')) 
     callback(false);
   });
   win.on('blur', () => { if (!mainWindow.isDestroyed() && !mainWindow.webContents.isDestroyed()) mainWindow.webContents.executeJavaScript('typeof closeDesktopMenus===\"function\"&&closeDesktopMenus()').catch(() => { }); });
-  win.on('close', event => { if (!quitting && tray && !tray.isDestroyed() && service.store.settings.closeToTray) { event.preventDefault(); mainWindow.hide(); } });
-  win.on('minimize', () => { if (!quitting && tray && !tray.isDestroyed() && service.store.settings.minimizeToTray) mainWindow.hide(); });
+  win.on('close', event => { if (!quitting && tray && !tray.isDestroyed() && service.store.settings.closeToTray) { event.preventDefault(); mainWindow.hide(); trimMemory(); } });
+  win.on('minimize', () => { if (!quitting && tray && !tray.isDestroyed() && service.store.settings.minimizeToTray) mainWindow.hide(); trimMemory(); });
   win.on('closed', () => { if (win === mainWindow) { win = null; if (toolsWindows) toolsWindows.main = null; } runtimeEvent({ event: 'main-window-closed', quitting }); });
   await win.loadURL(web.origin); win.webContents.setZoomFactor(Math.max(.8, Math.min(1.5, service.store.settings.textScale / 100))); if (!background) win.show(); return win;
 }

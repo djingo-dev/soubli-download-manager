@@ -276,7 +276,7 @@ function scheduleNextRefresh() {
   clearTimeout(refreshTimer);
   const isHidden = !desktopWindowVisible || document.visibilityState === 'hidden';
   const hasActive = state?.downloads?.some(isActive);
-  refreshIntervalMs = isHidden ? 5000 : (hasActive || detailId ? 1000 : 3000);
+  refreshIntervalMs = isHidden ? (hasActive ? 4000 : 8000) : (hasActive || detailId ? 1000 : 4000);
   refreshTimer = setTimeout(async () => {
     if (desktopWindowVisible && document.visibilityState !== 'hidden') {
       await refresh();
