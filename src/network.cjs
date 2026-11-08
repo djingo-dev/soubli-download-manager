@@ -2,7 +2,11 @@ const http = require('node:http');
 const https = require('node:https');
 const h2 = require('http2-wrapper');
 const { ProxyAgent } = require('proxy-agent');
-const agents = { http: new http.Agent({ keepAlive: true, maxSockets: 128 }), https: new https.Agent({ keepAlive: true, maxSockets: 128 }), http2: new h2.Agent({ maxSessions: 32 }) };
+const agents = {
+  http: new http.Agent({ keepAlive: true, keepAliveMsecs: 30000, maxSockets: 256, maxFreeSockets: 64, timeout: 45000 }),
+  https: new https.Agent({ keepAlive: true, keepAliveMsecs: 30000, maxSockets: 256, maxFreeSockets: 64, timeout: 45000 }),
+  http2: new h2.Agent({ maxSessions: 64 })
+};
 function validateURL(value, protocols = ['http:', 'https:', 'ftp:', 'ftps:']) {
   const u = new URL(value); if (!protocols.includes(u.protocol)) throw Error('بروتوكول الرابط غير مدعوم');
   if (u.username || u.password) throw Error('أدخل بيانات الدخول في حقل الحساب، وليس داخل الرابط'); return u;
@@ -31,6 +35,10 @@ async function request(url, options = {}, redirects = 0) {
         if (proxy) { config.agent = new ProxyAgent({ getProxyForUrl: () => proxy }); req = (u.protocol === 'https:' ? https : http).request(u, config, receive); }
         else if (u.protocol === 'https:' && !options.http1) req = await h2.auto(u, { ...config, agent: agents }, receive);
         else req = (u.protocol === 'https:' ? https : http).request(u, { ...config, agent: u.protocol === 'https:' ? agents.https : agents.http }, receive);
+        req.on('socket', socket => {
+          if (socket.setNoDelay) socket.setNoDelay(true);
+          if (socket.setKeepAlive) socket.setKeepAlive(true, 30000);
+        });
         req.on('error', fail); req.on('timeout', () => req.destroy(Error('انتهت مهلة استجابة الخادم')));
         if (signal.aborted) { req.destroy(signal.reason); return; } req.end(options.body);
       } catch (e) { fail(e); }

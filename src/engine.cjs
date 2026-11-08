@@ -104,6 +104,15 @@ class Engine extends EventEmitter {
     for (const s of ctx.segments) s.state = s.current >= s.end ? 'complete' : 'waiting';
     this.store.update(item.id, { ...{ size: info.size, resumable: info.resumable, etag: info.etag, modified: info.modified }, status: 'downloading', segments: ctx.segments });
     const configured = info.resumable ? Math.min(32, this.settings().serverConnections?.[ctx.host] || this.settings().connections) : 1, hint = this.hostHints[ctx.host]; ctx.connectionLimit = Math.min(configured, hint && Number.isInteger(hint.connections) && hint.connections >= 1 && hint.connections <= 32 && Date.now() - hint.time < 86400000 ? hint.connections : configured); ctx.retryAt = 0;
+    if (info.resumable && info.size && info.size > 2 * 1024 * 1024 && ctx.segments.length === 1 && ctx.segments[0].current === 0 && ctx.connectionLimit > 1) {
+      const segCount = ctx.connectionLimit, total = info.size, chunkSize = Math.floor(total / segCount);
+      const preSegments = [];
+      for (let i = 0; i < segCount; i++) {
+        const start = i * chunkSize, end = (i === segCount - 1) ? total : (i + 1) * chunkSize;
+        preSegments.push({ id: i + 1, start, current: start, end, state: 'waiting' });
+      }
+      ctx.segments = preSegments;
+    }
     let fatal;
     const workers = new Map(); ctx.rebalance = new Set();
     const launch = s => {
@@ -154,7 +163,7 @@ class Engine extends EventEmitter {
         if (ctx.etag && response.headers.etag && ctx.etag !== response.headers.etag || !this.settings().ignoreModified && ctx.modified && response.headers['last-modified'] && ctx.modified !== response.headers['last-modified']) throw Error('تغير الملف أثناء التحميل؛ تم إيقافه لمنع دمج نسخ مختلفة');
         if (!ctx.resumable && ctx.size && response.headers['content-length'] !== undefined && Number(response.headers['content-length']) !== ctx.size) throw Error('تغير حجم الملف بين الفحص وبدء التحميل');
         response.setTimeout?.(0); lastData = Date.now(); dataTimer = setInterval(() => { if (!ctx.stopped && !throttling && Date.now() - lastData > this.idleTimeout) response.destroy(Error('انتهت مهلة استقبال البيانات من الخادم')); }, Math.min(1000, this.idleTimeout)); dataTimer.unref();
-        const BUFFER_CAP = 65536;
+        const BUFFER_CAP = 262144;
         let buf = null, bufOffset = s.current, bufLen = 0;
         const flushBuffer = () => {
           if (bufLen > 0 && ctx.fd !== null) {
