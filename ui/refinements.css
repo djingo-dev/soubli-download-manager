@@ -1,7 +1,419 @@
-body:not(.dark){--muted:#68776f}
-*{scrollbar-width:thin;scrollbar-color:var(--line) transparent}
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
-::-webkit-scrollbar-track{background:transparent}
-.settings-nav button{line-height:1.6}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important}}
+/* ==========================================================================
+   SOUBLI OBSIDIAN DESIGN SYSTEM — TOTAL FRONTEND REDESIGN
+   Crafted with custom typography, depth physics, and luminous data cadence.
+   ========================================================================== */
+
+/* 1. ROOT VARIABLES & PALETTE SYSTEM */
+:root {
+  --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --transition-smooth: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-bounce: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* DAYLIGHT / LIGHT MODE PALETTE */
+body:not(.dark) {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --sidebar: #f1f5f9;
+  --line: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --primary: #059669;
+  --primary-soft: #ecfdf5;
+  --primary-glow: rgba(5, 150, 105, 0.25);
+  --accent-cyan: #0284c7;
+  --hover: #f1f5f9;
+  --shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 20px 45px -10px rgba(15, 23, 42, 0.12);
+}
+
+/* OBSIDIAN / DARK MODE PALETTE */
+body.dark {
+  --bg: #090d12;
+  --surface: #111822;
+  --sidebar: #0c1219;
+  --line: #1c2634;
+  --text: #f8fafc;
+  --muted: #8292a4;
+  --primary: #10b981;
+  --primary-soft: rgba(16, 185, 129, 0.12);
+  --primary-glow: rgba(16, 185, 129, 0.35);
+  --accent-cyan: #38bdf8;
+  --hover: #17212e;
+  --shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 25px 60px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* 2. BASE RESET & SMOOTHING */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-main) !important;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  line-height: 1.5 !important;
+}
+
+/* 3. ELEVATED GLASS TOPBAR & TITLEBAR */
+#topbar {
+  background: var(--surface) !important;
+  border-bottom: 1px solid var(--line) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+  transition: var(--transition-smooth);
+}
+
+.dark #topbar {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+.desktop-name {
+  gap: 12px !important;
+}
+
+.desktop-name img {
+  filter: drop-shadow(0 2px 8px var(--primary-glow));
+}
+
+.desktop-name b {
+  font-size: 21px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.6px !important;
+  background: linear-gradient(135deg, var(--text) 20%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 4. TACTILE COMMAND TOOLBAR */
+.command-toolbar {
+  padding: 8px 18px !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+.command-toolbar .tool {
+  border-radius: 9999px !important;
+  padding: 7px 16px !important;
+  font-size: 12px !important;
+  font-weight: 550 !important;
+  border: 1px solid transparent !important;
+  transition: var(--transition-smooth) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.command-toolbar .tool:hover {
+  background: var(--hover) !important;
+  border-color: var(--line) !important;
+  transform: translateY(-2px);
+}
+
+/* PRIMARY "ADD DOWNLOAD" BUTTON */
+.command-toolbar .tool[data-action="add"] {
+  background: linear-gradient(135deg, var(--primary) 0%, #0284c7 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px var(--primary-glow) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  padding: 8px 20px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.command-toolbar .tool[data-action="add"]:hover {
+  filter: brightness(1.12);
+  box-shadow: 0 8px 26px var(--primary-glow) !important;
+  transform: translateY(-2px) scale(1.03);
+}
+
+.command-toolbar .tool[data-action="add"] svg {
+  stroke: #ffffff !important;
+  stroke-width: 2.2 !important;
+}
+
+/* 5. OBSIDIAN SIDEBAR & HIERARCHY */
+#sidebar {
+  background: var(--sidebar) !important;
+  border-inline-end: 1px solid var(--line) !important;
+  padding: 20px 12px !important;
+}
+
+.nav-item, .tree-item {
+  border-radius: 12px !important;
+  padding: 9px 14px !important;
+  margin-bottom: 3px !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  color: var(--muted) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  transition: var(--transition-smooth) !important;
+}
+
+.nav-item:hover, .tree-item:hover {
+  background: var(--hover) !important;
+  color: var(--text) !important;
+  transform: translateX(3px);
+}
+
+body.rtl .nav-item:hover, body.rtl .tree-item:hover {
+  transform: translateX(-3px);
+}
+
+.nav-item.active, .tree-item.active {
+  background: var(--primary-soft) !important;
+  color: var(--primary) !important;
+  font-weight: 600 !important;
+  box-shadow: inset 3px 0 0 var(--primary) !important;
+}
+
+body.rtl .nav-item.active, body.rtl .tree-item.active {
+  box-shadow: inset -3px 0 0 var(--primary) !important;
+}
+
+.nav-item .counter, .tree-item .counter {
+  margin-inline-start: auto;
+  font-size: 10.5px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+/* 6. DOWNLOAD LIST DATA GRID */
+.downloads-table {
+  border-collapse: separate !important;
+  border-spacing: 0 3px !important;
+  width: 100% !important;
+}
+
+.downloads-table th {
+  background: transparent !important;
+  border-bottom: 1px solid var(--line) !important;
+  padding: 10px 16px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+  color: var(--muted) !important;
+}
+
+.download-row {
+  background: var(--surface) !important;
+  transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+.download-row td {
+  padding: 12px 16px !important;
+  border-top: 1px solid var(--line) !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+
+.download-row td:first-child {
+  border-inline-start: 1px solid var(--line) !important;
+  border-start-start-radius: 12px !important;
+  border-end-start-radius: 12px !important;
+}
+
+.download-row td:last-child {
+  border-inline-end: 1px solid var(--line) !important;
+  border-start-end-radius: 12px !important;
+  border-end-end-radius: 12px !important;
+}
+
+.download-row:hover {
+  background: var(--hover) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.download-row.selected {
+  background: var(--primary-soft) !important;
+}
+
+.file-name {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--text) !important;
+}
+
+.file-sub {
+  font-size: 11px !important;
+  color: var(--muted) !important;
+  margin-top: 2px !important;
+}
+
+/* 7. LUMINOUS NEON PROGRESS BARS */
+.progress-cell .progress, .progress {
+  height: 7px !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-radius: 9999px !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.dark .progress-cell .progress, .dark .progress {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.progress-bar, .progress > div {
+  height: 100% !important;
+  border-radius: 9999px !important;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--accent-cyan) 100%) !important;
+  box-shadow: 0 0 12px var(--primary-glow) !important;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* 8. REFINED STATUS PILLS */
+.status-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  border-radius: 9999px !important;
+  padding: 4px 12px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.status-badge.downloading, .status-badge.processing {
+  background: rgba(16, 185, 129, 0.14) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.28) !important;
+}
+
+.status-badge.complete {
+  background: rgba(56, 189, 248, 0.14) !important;
+  color: #0284c7 !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+}
+
+.dark .status-badge.complete {
+  color: #38bdf8 !important;
+}
+
+.status-badge.paused, .status-badge.limited {
+  background: rgba(245, 158, 11, 0.14) !important;
+  color: #d97706 !important;
+  border: 1px solid rgba(245, 158, 11, 0.28) !important;
+}
+
+.dark .status-badge.paused, .dark .status-badge.limited {
+  color: #fbbf24 !important;
+}
+
+.status-badge.error {
+  background: rgba(239, 68, 68, 0.14) !important;
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.28) !important;
+}
+
+/* 9. FLOATING MODALS & DETAIL WINDOWS */
+#dialog {
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  background: var(--surface) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  animation: soubliModalDrop 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes soubliModalDrop {
+  from { opacity: 0; transform: scale(0.95) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-head {
+  padding: 18px 26px !important;
+  border-bottom: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+}
+
+.modal-head h2 {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.3px !important;
+}
+
+.modal-body {
+  padding: 26px !important;
+}
+
+.modal-foot {
+  padding: 16px 26px !important;
+  border-top: 1px solid var(--line) !important;
+  background: var(--sidebar) !important;
+}
+
+/* 10. INPUTS & CONTROLS */
+input[type="text"], input[type="url"], input[type="number"], input[type="password"], select, textarea {
+  border-radius: 12px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  padding: 10px 16px !important;
+  font-size: 13px !important;
+  transition: var(--transition-smooth) !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px var(--primary-glow) !important;
+  outline: none !important;
+}
+
+/* 11. BUTTONS SYSTEM */
+.btn {
+  border-radius: 12px !important;
+  padding: 8px 18px !important;
+  font-weight: 600 !important;
+  font-size: 12.5px !important;
+  transition: var(--transition-smooth) !important;
+  border: 1px solid var(--line) !important;
+}
+
+.btn:hover {
+  background: var(--hover) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+  transform: translateY(-1px);
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, var(--primary) 0%, #0284c7 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 4px 14px var(--primary-glow) !important;
+}
+
+.btn.primary:hover {
+  filter: brightness(1.1) !important;
+  box-shadow: 0 6px 20px var(--primary-glow) !important;
+  transform: translateY(-2px);
+}
+
+/* 12. ULTRA-SMOOTH SCROLLBAR */
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--line) transparent !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--line) !important;
+  border-radius: 9999px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
