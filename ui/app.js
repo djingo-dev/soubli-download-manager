@@ -59,7 +59,36 @@ async function refreshOnce() {
 }
 function baseDownloads() { if (view.startsWith('saved:')) return state.downloads.filter(d => soubliLibraryModel.matches(d, state.library?.views.find(v => v.id === view.slice(6))?.query || '')); return state.downloads.filter(d => view === 'all' || view === 'active' && isActive(d) || view === 'complete' && d.status === 'complete' || view === 'unfinished' && d.status !== 'complete' || view.startsWith('queue:') && d.queueId === view.slice(6) || d.category === view); }
 function filteredDownloads() { return baseDownloads().filter(d => (filter === 'all' || filter === 'active' && isActive(d) || filter === 'complete' && d.status === 'complete' || filter === 'paused' && ['paused', 'limited'].includes(d.status) || filter === 'pending' && d.status === 'pending' || filter === 'queued' && d.status === 'queued' || filter === 'error' && d.status === 'error') && (!search || soubliLibraryModel.matches(d, search))).sort((a, b) => { const x = sort === 'time' ? ((a.size - a.downloaded) / (a.speed || 1)) : a[sort], y = sort === 'time' ? ((b.size - b.downloaded) / (b.speed || 1)) : b[sort]; return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), undefined, { sensitivity: 'base', numeric: true })) * (sortAsc ? 1 : -1); }); }
-function updateChart() { const target = $('#speed-chart'); if (!target) return; const max = Math.max(1024, ...history), values = Array(60 - history.length).fill(0).concat(history); const points = values.map((n, i) => `${i / 59 * 600},${58 - n / max * 50}`).join(' '); target.innerHTML = `<svg viewBox="0 0 600 65" preserveAspectRatio="none" aria-label="${t('سرعة التحميل الفعلية', 'Actual transfer speed')}"><path d="M0 16h600M0 38h600M0 60h600" stroke="var(--line)" fill="none" stroke-dasharray="4 5"/><polygon points="0,65 ${points} 600,65" fill="var(--primary-soft)"/><polyline points="${points}" fill="none" stroke="var(--primary)" stroke-width="1.7" vector-effect="non-scaling-stroke"/></svg>`; $('#chart-current').textContent = ' · ' + size(history.at(-1) || 0) + '/s'; }
+function updateChart() {
+  const target = $('#speed-chart'); if (!target) return;
+  const currentRate = history.at(-1) || 0;
+  const peakRate = Math.max(1024, ...history);
+  const values = Array(60 - history.length).fill(0).concat(history);
+  
+  // Smooth curve points
+  const pointsArr = values.map((n, i) => [(i / 59 * 600).toFixed(1), (58 - (peakRate ? (n / peakRate * 48) : 0)).toFixed(1)]);
+  const linePoints = pointsArr.map(p => p.join(',')).join(' ');
+  const areaD = `M0,65 L${pointsArr.map(p => p.join(',')).join(' L')} L600,65 Z`;
+  
+  target.innerHTML = `
+    <div class="speed-chart-glow"></div>
+    <svg viewBox="0 0 600 65" preserveAspectRatio="none" aria-label="${t('سرعة التحميل الفعلية', 'Actual transfer speed')}">
+      <defs>
+        <linearGradient id="speedGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.38"/>
+          <stop offset="100%" stop-color="var(--primary)" stop-opacity="0.01"/>
+        </linearGradient>
+      </defs>
+      <path d="M0 16h600M0 38h600M0 58h600" stroke="var(--line)" fill="none" stroke-dasharray="4 6" opacity="0.6"/>
+      <path d="${areaD}" fill="url(#speedGrad)"/>
+      <polyline points="${linePoints}" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+    </svg>
+  `;
+  const chartCurrent = $('#chart-current');
+  if (chartCurrent) {
+    chartCurrent.innerHTML = ` · <strong style="color:var(--primary);font-weight:700;">${size(currentRate)}/s</strong> <span style="opacity:0.75;font-size:11px;">(${t('القمة', 'Peak')}: ${size(peakRate)}/s)</span>`;
+  }
+}
 function modal(title, body, foot = '', wide = false) { detailId = null; const dlg = $('#dialog'); dlg.className = wide ? 'wide' : ''; $('#dialog-content').innerHTML = `<div class="modal-head"><h2>${h(title)}</h2>${ib('close', t('إغلاق', 'Close'), 'x')}</div>${body}<div class="modal-foot">${foot || button('close', t('إغلاق', 'Close'), null)}</div>`; if (!dlg.open) dlg.showModal(); }
 let activeProbe = '';
 function cancelProbe() { const id = activeProbe; activeProbe = ''; if (id) api('probeCancel', { requestId: id }).catch(() => { }); }

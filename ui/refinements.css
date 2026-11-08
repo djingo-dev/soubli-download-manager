@@ -417,3 +417,46 @@ input:focus, select:focus, textarea:focus {
 ::-webkit-scrollbar-track {
   background: transparent !important;
 }
+
+/* 13. MODERN SPEED MONITOR & DROP ZONE ENHANCEMENTS */
+.speed-chart-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 50% 100%, var(--primary-glow) 0%, transparent 75%);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.speed-chart {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+}
+
+.speed-chart svg {
+  display: block;
+  width: 100%;
+}
+
+.transfer-chart {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  padding: 8px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.dark .transfer-chart {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.transfer-chart svg {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
